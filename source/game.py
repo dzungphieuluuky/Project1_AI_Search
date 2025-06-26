@@ -1,5 +1,5 @@
-import collections
-
+import heapq
+import pygame
 class Game():
     """
     Car map: the initial state and information of each car on the map
@@ -45,6 +45,10 @@ class Game():
                     if (row, col) == (i_position + k, j_position):
                         return False
         return True
+    
+    # nap code Thinh Bui vao day
+    def draw_all_sprites(self):
+        pass
 
     def get_successors(self, state):
         # list of next posisble states and cost
@@ -78,3 +82,33 @@ class Game():
                     next_state[car] = (new_row, col)
                     results.append((next_state, cost))
         return results
+    
+    def ucs_solver(self):
+        state = self.initial_state
+        step_count = 0
+        total_cost = None
+        frontier = []
+        predecessor = {}
+        expanded = set()
+        cost = {state: 0}
+        heapq.heappush(frontier, (0, state))
+
+        while not frontier:
+            current_cost, current_state = heapq.heappop(frontier)
+            total_cost = current_cost
+            
+            if current_state not in expanded:
+                expanded.add(current_state)
+                step_count += 1
+            else:
+                continue
+            
+            if self.is_goal(current_state):
+                return
+            
+            for next_state, next_cost in self.get_successors(current_state):
+                new_cost = current_cost + next_cost
+                if next_state not in cost or cost[next_state] > new_cost:
+                    cost[next_state] = new_cost
+                    heapq.heappush(frontier, (new_cost, next_state))
+                    predecessor[next_state] = current_state
