@@ -1,5 +1,7 @@
 import heapq
 import pygame
+from timeit import default_timer
+from memory_profiler import profile
 class Game():
     """
     Car map: the initial state and information of each car on the map
@@ -83,10 +85,16 @@ class Game():
                     results.append((next_state, cost))
         return results
     
+    @profile
     def ucs_solver(self):
-        state = self.initial_state
         step_count = 0
-        total_cost = None
+        total_cost = 0
+        search_time = 0
+        memory_usage = 0
+        expanded_nodes = 0
+        start = default_timer()
+
+        state = self.initial_state
         frontier = []
         predecessor = {}
         expanded = set()
@@ -104,6 +112,9 @@ class Game():
                 continue
             
             if self.is_goal(current_state):
+                expanded_nodes = len(expanded)
+                end = default_timer()
+                search_time = end - start
                 return
             
             for next_state, next_cost in self.get_successors(current_state):

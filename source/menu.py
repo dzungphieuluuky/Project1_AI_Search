@@ -6,33 +6,29 @@ DARK_BLUE = (0, 80, 200)
 BLACK = (0, 0, 0)
 
 pygame.init()
-font = pygame.font.SysFont("Cascadia Mono", 96)
+font = pygame.font.SysFont("Cascadia Mono", 96, bold=True)
 small_font = pygame.font.SysFont("Cascadia Mono", 32)
 
 class Button:
     # initialize button class with callback function
-    def __init__(self, text, x, y, w, h, callback):
-        self.rect = pygame.Rect(x, y, w, h)
+    def __init__(self, text : str, x: int, y: int, width: int, height: int, color: tuple, callback):
+        self.rect = pygame.Rect(x, y, width, height)
         self.text = text
+        
+        self.color = color
 
         # callback function to call the function of the button
-        self.normal_color = BLUE
-        self.hovered_color = DARK_BLUE
         self.callback = callback
-        self.is_hovered = False
-        self.text_surface = None
 
-    def draw_rect(self, surface):
-        self.surface = surface
-        color = self.hovered_color if self.is_hovered else self.normal_color
-        pygame.draw.rect(surface, color, self.rect)
+        self.is_hovered = False
+
+    def draw_button(self, surface):
+        pygame.draw.rect(surface, self.color, self.rect, border_radius=15)
         text_surf = small_font.render(self.text, True, WHITE)
-        self.text_surface = text_surf
+        if self.is_hovered:
+            text_surf = pygame.transform.scale_by(text_surf, 1.1)
         text_rect = text_surf.get_rect(center=self.rect.center)
         surface.blit(text_surf, text_rect)
-        if self.is_hovered:
-            pygame.transform.smoothscale_by(text_surf, 1.1)
-
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEMOTION:
