@@ -40,9 +40,10 @@ def menu_loop():
                       button_width, button_height, AMARANTH_PURPLE, pygame.quit)]
     
     hovered_button = 0
+    title = font.render("Rush Hour with AI", True, AMARANTH_PURPLE)
+
     while running:
         screen.blit(image, image_rect)
-        title = font.render("Rush Hour with AI", True, AMARANTH_PURPLE)
         screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 100))
         
         for button in buttons:
@@ -54,7 +55,7 @@ def menu_loop():
                 sys.exit()
                 running = False
             
-            if event.type == pygame.KEYDOWN:
+            elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP or event.key == pygame.K_w:
                     buttons[hovered_button].is_hovered = False
                     hovered_button = (hovered_button - 1) % len(buttons)
@@ -79,46 +80,48 @@ def start_game():
     pass
 
 def introduction_screen():
-    running = True
-    title_font = pygame.font.SysFont("Comic Sans MS", 60, bold=True)
-    body_font = pygame.font.SysFont("Arial", 28)
+    title_font = pygame.font.SysFont("Roboto", 60, bold=True)
+    body_font = pygame.font.SysFont("Lato", 28)
+    
+    introductions = [
+        "This app helps you visualize AI search algorithms via Rush Hour Game.",
+        "Buttons are floating around to help you navigate better.",
+        "Here are some instruction to help you through the game!",
+        "1. Use arrow keys (up/down/left/right) or WASD keys to navigate the game.",
+        "2. Select search algorithm (DFS/BFS/UCS/A*) to find a solution.",
+        "3. The game ends when the target vehicle satisfies any of 2 conditions:",
+        "   <> Successfully exit the map.",
+        "   <> Get stuck infinitely in the map.",
+        "4. Click the Start Game below to start the search!"
+    ]
+    # list to hold all buttons
+    buttons = []
 
+    title = title_font.render("Introduction", True, BLACK)
+
+    back_button_title = body_font.render("Back to Menu", True, BLACK)
+    back_button_width = back_button_title.get_width() + 35
+    back_button_height = back_button_title.get_height() + 35
+    back_button = Button("Back to Menu", WIDTH - 20 - back_button_width, 20, 
+                            back_button_width, back_button_height, ATOMIC_TANGERINE, menu_loop)
+    buttons.append(back_button)
+
+    start_button_title = body_font.render("Start Game", True, BLACK)
+    start_button_width = start_button_title.get_width() + 35
+    start_button_height = start_button_title.get_height() + 35
+    start_button = Button("Start Game", WIDTH // 2 - start_button_width // 2,HEIGHT - 20 - start_button_height, 
+                            start_button_width, start_button_height, AMARANTH_PURPLE, start_game)
+    buttons.append(start_button)
+
+    running = True
     while running:
         screen.fill(CREAM)
-
-        title = title_font.render("Introduction", True, BLACK)
         screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 50))
-
-        introductions = [
-            "This app helps you visualize AI search algorithms via Rush Hour Game.",
-            "Buttons are floating around to help you navigate better.",
-            "Here are some instruction to help you through the game!",
-            "1. Use arrow keys (up/down/left/right) or WASD keys to navigate the game.",
-            "2. Select search algorithm (DFS/BFS/UCS/A*) to find a solution.",
-            "3. The game ends when the target vehicle satisfies any of 2 conditions:",
-            "   <> Successfully exit the map.",
-            "   <> Get stuck infinitely in the map.",
-            "4. Click the Start Game below to start the search!"
-        ]
 
         for i, line in enumerate(introductions):
             text = small_font.render(line, True, BLACK)
             screen.blit(text, (20, 150 + 40 * i))
         
-        back_button_title = body_font.render("Back to Menu", True, BLACK)
-        back_button_width = back_button_title.get_width() + 20
-        back_button_height = back_button_title.get_height() + 20
-        back_button = Button("Back to Menu", WIDTH - 20 - back_button_width, 
-                            20, back_button_width, back_button_height, ATOMIC_TANGERINE, menu_loop)
-
-        start_button_title = body_font.render("Start Game", True, BLACK)
-        start_button_width = start_button_title.get_width() + 20
-        start_button_height = start_button_title.get_height() + 20
-        start_button = Button("Start Game", WIDTH // 2 - start_button_width // 2,HEIGHT - 20 - start_button_height, 
-                              start_button_width, start_button_height, AMARANTH_PURPLE, start_game)
-
-        # list to hold all buttons
-        buttons = [back_button, start_button]
         for button in buttons:
             button.draw_button(screen)
 
@@ -129,7 +132,6 @@ def introduction_screen():
                 sys.exit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 running = False
-                return
             
             for button in buttons:
                 button.handle_event(event=event)
