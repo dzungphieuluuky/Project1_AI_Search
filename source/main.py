@@ -77,7 +77,8 @@ def menu_loop() -> None:
         clock.tick(FPS)
 
 def start_game() -> None:
-    pass
+    body_font = pygame.font.SysFont("Cascadia Mono", 28)
+    
 
 def introduction_screen() -> None:
     title_font = pygame.font.SysFont("Consolas", 60, bold=True)
