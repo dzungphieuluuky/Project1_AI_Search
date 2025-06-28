@@ -86,40 +86,57 @@ class Game():
         return results
     
     @profile
-    def ucs_solver(self):
+    def ucs_solver(self) -> tuple[list, int, int, int]:
+        # a list of dictionary contains: state, step count, total cost
+        solution = []
+
+        # real time stats to display on GUI
         step_count = 0
         total_cost = 0
+
+        # metrics to measure performance
         search_time = 0
         memory_usage = 0
         expanded_nodes = 0
+        
+        # begin timer
         start = default_timer()
 
         state = self.initial_state
         frontier = []
-        predecessor = {}
+        parent_of = {}
         expanded = set()
-        cost = {state: 0}
+        cost = {state: 0} # map from a state to the cost from the initial to that state
         heapq.heappush(frontier, (0, state))
 
         while not frontier:
             current_cost, current_state = heapq.heappop(frontier)
-            total_cost = current_cost
             
             if current_state not in expanded:
                 expanded.add(current_state)
-                step_count += 1
             else:
                 continue
             
             if self.is_goal(current_state):
-                expanded_nodes = len(expanded)
+                expanded_nodes += len(expanded)
                 end = default_timer()
-                search_time = end - start
-                return
+                search_time += end - start
+                this_state = current_state
+                while this_state in parent_of:
+                    this_cost = cost[this_state]
+                    solution.append({'total_cost' : this_cost, 'state' : this_state})
+                    this_state = parent_of[this_state]
+                
+                # add the initial state
+                solution.append({'total_cost' : 0, 'state': self.initial_state})
+                
+                # reverse the list to get the right order of state
+                solution = reversed(solution)
+                return solution, search_time, memory_usage, expanded_nodes
             
             for next_state, next_cost in self.get_successors(current_state):
                 new_cost = current_cost + next_cost
                 if next_state not in cost or cost[next_state] > new_cost:
                     cost[next_state] = new_cost
                     heapq.heappush(frontier, (new_cost, next_state))
-                    predecessor[next_state] = current_state
+                    parent_of[next_state] = current_state
