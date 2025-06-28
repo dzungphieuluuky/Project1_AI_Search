@@ -1,4 +1,5 @@
 from menu import Button, font, small_font
+from game import Game
 import pygame
 import sys
 
@@ -34,7 +35,7 @@ def menu_loop() -> None:
     button_x_coordinate = WIDTH // 2 - button_width // 2
     last_button_y_coordinate = HEIGHT - 20 - button_height
 
-    buttons = [Button("Play", button_x_coordinate, last_button_y_coordinate - 2 * (button_height + 10), 
+    buttons = [Button("Start Game", button_x_coordinate, last_button_y_coordinate - 2 * (button_height + 10), 
                       button_width, button_height, ATOMIC_TANGERINE, start_game),
                Button("Introduction", button_x_coordinate, last_button_y_coordinate - (button_height + 10), 
                       button_width, button_height, ZOMP, introduction_screen),
@@ -81,11 +82,12 @@ def menu_loop() -> None:
 def start_game() -> None:
     body_font = pygame.font.SysFont("Consolas", 24)
 
+    game = Game()
     algo_names = ["Breadth-First Search", "Depth-First Search",
                   "Uniform-Cost Search", "A* Search"]
     
-    # algo_function = [bfs_solver, dfs_solver,
-    #                  ucs_solver, a_solver]
+    algo_function = [game.bfs_solver, game.dfs_solver,
+                     game.ucs_solver, game.a_star_solver]
     
     buttons = []
     selected_algo_index = 0

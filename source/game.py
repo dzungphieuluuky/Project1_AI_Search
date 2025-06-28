@@ -152,3 +152,12 @@ class Game():
         memory_usage = memory_peak
         expanded_nodes = len(expanded)
         return solution, search_time, memory_usage, expanded_nodes
+    
+    def bfs_solver(self):
+        pass
+
+    def dfs_solver(self):
+        pass
+
+    def a_star_solver(self):
+        pass
