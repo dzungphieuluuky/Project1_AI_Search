@@ -79,10 +79,11 @@ def menu_loop() -> None:
         clock.tick(FPS)
 
 def start_game() -> None:
-    body_font = pygame.font.SysFont("Cascadia Mono", 28)
+    body_font = pygame.font.SysFont("Consolas", 24)
 
     algo_names = ["Breadth-First Search", "Depth-First Search",
                   "Uniform-Cost Search", "A* Search"]
+    
     # algo_function = [bfs_solver, dfs_solver,
     #                  ucs_solver, a_solver]
     
@@ -95,12 +96,12 @@ def start_game() -> None:
     selected_algo_text_rect = selected_algo_text_surf.get_rect(center=selected_algo_box_rect.center)
 
     step_count_text_surf = body_font.render('Step count: 0', True, BLACK)
-    step_count_box_rect = pygame.Rect(20, 20 + selected_algo_text_surf.get_height() + 20,
+    step_count_box_rect = pygame.Rect(20, 20 + selected_algo_text_surf.get_height() + 40,
                                       step_count_text_surf.get_width() + 35, step_count_text_surf.get_height() +35)
     step_count_text_rect = step_count_text_surf.get_rect(center=step_count_box_rect.center)
 
     total_cost_text_surf = body_font.render('Total cost: 0', True, BLACK)
-    total_cost_box_rect = pygame.Rect(20, 20 + 2 * (selected_algo_text_surf.get_height() + 20),
+    total_cost_box_rect = pygame.Rect(20, 20 + 2 * (selected_algo_text_surf.get_height() + 40),
                                       total_cost_text_surf.get_width() + 35, total_cost_text_surf.get_height() + 35)
     total_cost_text_rect = total_cost_text_surf.get_rect(center=total_cost_box_rect.center)
 
