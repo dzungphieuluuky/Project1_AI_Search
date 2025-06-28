@@ -7,11 +7,11 @@ BLACK = (0, 0, 0)
 
 pygame.init()
 font = pygame.font.SysFont("Montserrat", 96, bold=True)
-small_font = pygame.font.SysFont("Russo One", 32)
+small_font = pygame.font.SysFont("Cascadia Mono", 32)
 
 class Button:
     # initialize button class with callback function
-    def __init__(self, text : str, x: float, y: float, width: float, height: float, color: tuple, callback: callable) -> None:
+    def __init__(self, text : str, x: float, y: float, width: float, height: float, color: tuple[int, int, int], callback: callable) -> None:
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.color = color
