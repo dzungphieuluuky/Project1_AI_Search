@@ -1,7 +1,8 @@
 import heapq
 import pygame
 from timeit import default_timer
-from memory_profiler import profile
+import tracemalloc
+
 class Game():
     """
     Car map: the initial state and information of each car on the map
@@ -85,7 +86,6 @@ class Game():
                     results.append((next_state, cost))
         return results
     
-    @profile
     def ucs_solver(self) -> tuple[list, int, int, int]:
         # a list of dictionary contains: state, step count, total cost
         solution = []
@@ -102,6 +102,7 @@ class Game():
         # begin timer
         start = default_timer()
 
+        tracemalloc.start()
         state = self.initial_state
         frontier = []
         parent_of = {}
@@ -132,6 +133,9 @@ class Game():
                 
                 # reverse the list to get the right order of state
                 solution = reversed(solution)
+                memory_size, memory_peak = tracemalloc.get_traced_memory()
+                tracemalloc.reset_peak()
+                memory_usage = memory_peak
                 return solution, search_time, memory_usage, expanded_nodes
             
             for next_state, next_cost in self.get_successors(current_state):
@@ -140,3 +144,11 @@ class Game():
                     cost[next_state] = new_cost
                     heapq.heappush(frontier, (new_cost, next_state))
                     parent_of[next_state] = current_state
+        
+        print("No solution is found!")
+        search_time = default_timer() - start
+        memory_size, memory_peak = tracemalloc.get_traced_memory()
+        tracemalloc.reset_peak()
+        memory_usage = memory_peak
+        expanded_nodes = len(expanded)
+        return solution, search_time, memory_usage, expanded_nodes
