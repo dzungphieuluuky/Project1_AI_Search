@@ -87,11 +87,33 @@ def start_game() -> None:
     #                  ucs_solver, a_solver]
     
     buttons = []
-    selected_algo = 0
+    selected_algo_index = 0
+
+    selected_algo_text_surf = body_font.render(f'{algo_names[selected_algo_index]}', False, BLACK)
+    selected_algo_box_rect = pygame.Rect(20, 20, 
+                                         selected_algo_text_surf.get_width() + 35, selected_algo_text_surf.get_height() + 35)
+    selected_algo_text_rect = selected_algo_text_surf.get_rect(center=selected_algo_box_rect.center)
+
+    step_count_text_surf = body_font.render('Step count: 0', True, BLACK)
+    step_count_box_rect = pygame.Rect(20, 20 + selected_algo_text_surf.get_height() + 20,
+                                      step_count_text_surf.get_width() + 35, step_count_text_surf.get_height() +35)
+    step_count_text_rect = step_count_text_surf.get_rect(center=step_count_box_rect.center)
+
+    total_cost_text_surf = body_font.render('Total cost: 0', True, BLACK)
+    total_cost_box_rect = pygame.Rect(20, 20 + 2 * (selected_algo_text_surf.get_height() + 20),
+                                      total_cost_text_surf.get_width() + 35, total_cost_text_surf.get_height() + 35)
+    total_cost_text_rect = total_cost_text_surf.get_rect(center=total_cost_box_rect.center)
 
     running = True
     while running:
         screen.fill(ATOMIC_TANGERINE)
+        pygame.draw.rect(screen, FRENCH_BLUE, selected_algo_box_rect, border_radius=15)
+        pygame.draw.rect(screen, AMARANTH_PURPLE, step_count_box_rect, border_radius=15)
+        pygame.draw.rect(screen, ZOMP, total_cost_box_rect, border_radius=15)
+        
+        screen.blit(selected_algo_text_surf, selected_algo_text_rect)
+        screen.blit(step_count_text_surf, step_count_text_rect)
+        screen.blit(total_cost_text_surf, total_cost_text_rect)
         
         for button in buttons:
             button.draw_button(screen)
