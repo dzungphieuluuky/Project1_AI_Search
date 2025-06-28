@@ -11,7 +11,7 @@ small_font = pygame.font.SysFont("Russo One", 32)
 
 class Button:
     # initialize button class with callback function
-    def __init__(self, text : str, x: float, y: float, width: float, height: float, color: tuple, callback: callable):
+    def __init__(self, text : str, x: float, y: float, width: float, height: float, color: tuple, callback: callable) -> None:
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.color = color
@@ -20,7 +20,7 @@ class Button:
 
         self.is_hovered = False
 
-    def draw_button(self, surface):
+    def draw_button(self, surface: pygame.surface) -> None:
         text_surf = small_font.render(self.text, True, WHITE)
         if self.is_hovered:
             text_surf = pygame.transform.scale_by(text_surf, 1.1)
@@ -30,7 +30,7 @@ class Button:
         text_rect = text_surf.get_rect(center=self.rect.center)
         surface.blit(text_surf, text_rect)
 
-    def handle_event(self, event):
+    def handle_event(self, event: pygame.event) -> None:
         if event.type == pygame.MOUSEMOTION:
             self.is_hovered = self.rect.collidepoint(event.pos)
         elif self.is_hovered and (event.type == pygame.MOUSEBUTTONDOWN or

@@ -19,10 +19,10 @@ HEIGHT = 600
 FPS = 60
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Search Visualizer via Rush Hour")
+pygame.display.set_caption("Rush Hour AI Search Visualizer")
 clock = pygame.time.Clock()
 
-def menu_loop():
+def menu_loop() -> None:
     running = True
     image = pygame.image.load('./img/background2.jpg').convert_alpha()
     image_rect = image.get_rect()
@@ -76,12 +76,12 @@ def menu_loop():
         pygame.display.flip()
         clock.tick(FPS)
 
-def start_game():
+def start_game() -> None:
     pass
 
-def introduction_screen():
-    title_font = pygame.font.SysFont("Roboto", 60, bold=True)
-    body_font = pygame.font.SysFont("Lato", 28)
+def introduction_screen() -> None:
+    title_font = pygame.font.SysFont("Consolas", 60, bold=True)
+    body_font = pygame.font.SysFont("Cascadia Mono", 28)
     
     introductions = [
         "This app helps you visualize AI search algorithms via Rush Hour Game.",

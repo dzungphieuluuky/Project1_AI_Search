@@ -21,17 +21,17 @@ class Game():
     }
     The first is i position, the second is j position
     """
-    def __init__(self, initial_state, exit_row, cars_map, size):
+    def __init__(self, initial_state: dict, exit_row: int, cars_map: dict, size: int) -> None:
         self.initial_state = initial_state
         self.exit_row = exit_row
         self.size = size
         self.cars_map = cars_map
     
-    def is_goal(self, state):
+    def is_goal(self, state: dict) -> bool:
         player_car = state['player']
         return player_car[1] + self.cars_map['player']['length'] - 1 == self.size - 1
     
-    def is_free(self, state, row, col):
+    def is_free(self, state: dict, row: int, col: int) -> bool:
         if not (0 <= row <= self.size - 1 and 0 <= col <= self.size - 1):
             return False
         for car, info in self.cars_map.items():
@@ -49,10 +49,10 @@ class Game():
         return True
     
     # nap code Thinh Bui vao day
-    def draw_all_sprites(self):
+    def draw_all_sprites(self) -> None:
         pass
 
-    def get_successors(self, state):
+    def get_successors(self, state: dict) -> list[tuple[dict, int]]:
         # list of next posisble states and cost
         results = []
 
