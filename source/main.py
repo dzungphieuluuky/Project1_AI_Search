@@ -13,7 +13,9 @@ FRENCH_BLUE = (0, 114, 187)
 CREAM = (239, 242, 192)
 ZOMP = (81, 158, 138)
 
+# super important line
 pygame.init()
+
 WIDTH = 800
 HEIGHT = 600
 FPS = 60
@@ -78,7 +80,37 @@ def menu_loop() -> None:
 
 def start_game() -> None:
     body_font = pygame.font.SysFont("Cascadia Mono", 28)
+
+    algo_names = ["Breadth-First Search", "Depth-First Search",
+                  "Uniform-Cost Search", "A* Search"]
+    # algo_function = [bfs_solver, dfs_solver,
+    #                  ucs_solver, a_solver]
     
+    buttons = []
+    selected_algo = 0
+
+    running = True
+    while running:
+        screen.fill(ATOMIC_TANGERINE)
+        
+        for button in buttons:
+            button.draw_button(screen)
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                pygame.quit()
+                sys.exit()
+            
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                running = False
+            
+            for button in buttons:
+                button.handle_event(event=event)
+        
+        pygame.display.flip()
+        clock.tick(FPS)
+
 
 def introduction_screen() -> None:
     title_font = pygame.font.SysFont("Consolas", 60, bold=True)
