@@ -37,3 +37,6 @@ class Button:
                                   event.type == pygame.KEYDOWN and (event.key == pygame.K_RETURN or
                                                                     event.key == pygame.K_SPACE)):
             self.callback()
+    
+    def set_text(self, text) -> None:
+        self.text = text
