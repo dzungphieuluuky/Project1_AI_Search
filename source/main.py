@@ -82,12 +82,11 @@ def menu_loop() -> None:
 def start_game() -> None:
     body_font = pygame.font.SysFont("Consolas", 24)
 
-    game = Game()
     algo_names = ["Breadth-First Search", "Depth-First Search",
                   "Uniform-Cost Search", "A* Search"]
     
-    algo_function = [game.bfs_solver, game.dfs_solver,
-                     game.ucs_solver, game.a_star_solver]
+    # algo_function = [game.bfs_solver, game.dfs_solver,
+    #                  game.ucs_solver, game.a_star_solver]
     
     buttons = []
     selected_algo_index = 0
