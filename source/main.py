@@ -93,6 +93,7 @@ def start_game() -> None:
     selected_algo_index = 0
     step_count = 0
     total_cost = 0
+    pause = False
 
     def change_algo() -> None:
         nonlocal selected_algo_index
@@ -117,6 +118,25 @@ def start_game() -> None:
                                total_cost_text_surf.get_width() + 35, total_cost_text_surf.get_height() + 35,
                                ZOMP, lambda: None, expandable=False)
     buttons.append(total_cost_button)
+
+    reset_surf = body_font.render('Reset', True, BLACK)
+    reset_button_y_position = HEIGHT - 60 - reset_surf.get_height()
+    reset_button = Button('Reset', 20, reset_button_y_position,
+                          reset_surf.get_width() + 35, reset_surf.get_height() + 35,
+                          AMARANTH_PURPLE, start_game)
+    buttons.append(reset_button)
+
+    def change_play_pause():
+        nonlocal pause
+        pause = not pause
+        pause_play_button.set_text('Play' if pause else 'Pause')
+        print(f'Pause: {pause}') # for debug
+
+    pause_play_surf = body_font.render('Pause', True, BLACK)
+    pause_play_button = Button('Pause', 20, reset_button_y_position - (pause_play_surf.get_height() + 40),
+                          pause_play_surf.get_width() + 35, pause_play_surf.get_height() + 35,
+                          ZOMP, change_play_pause)
+    buttons.append(pause_play_button)    
 
     running = True
     while running:

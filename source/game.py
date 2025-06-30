@@ -87,12 +87,14 @@ class Game():
         return results
     
     def ucs_solver(self) -> tuple[list, int, int, int]:
-        # a list of dictionary contains: state, step count, total cost
+        ''' 
+        Solution is a list of dictionaries each contains: state, total cost
+        Example of a solution:
+        solution = [
+        {'state': some state, 'cost': some cost},
+        {'state': another state, 'cost': another cost}]
+        '''
         solution = []
-
-        # real time stats to display on GUI
-        step_count = 0
-        total_cost = 0
 
         # metrics to measure performance
         search_time = 0
@@ -107,7 +109,7 @@ class Game():
         frontier = []
         parent_of = {}
         expanded = set()
-        cost = {state: 0} # map from a state to the cost from the initial to that state
+        cost_of = {state: 0} # map from a state to the cost from the initial to that state
         heapq.heappush(frontier, (0, state))
 
         while not frontier:
@@ -124,7 +126,7 @@ class Game():
                 search_time += end - start
                 this_state = current_state
                 while this_state in parent_of:
-                    this_cost = cost[this_state]
+                    this_cost = cost_of[this_state]
                     solution.append({'total_cost' : this_cost, 'state' : this_state})
                     this_state = parent_of[this_state]
                 
@@ -140,8 +142,8 @@ class Game():
             
             for next_state, next_cost in self.get_successors(current_state):
                 new_cost = current_cost + next_cost
-                if next_state not in cost or cost[next_state] > new_cost:
-                    cost[next_state] = new_cost
+                if next_state not in cost_of or cost_of[next_state] > new_cost:
+                    cost_of[next_state] = new_cost
                     heapq.heappush(frontier, (new_cost, next_state))
                     parent_of[next_state] = current_state
         
