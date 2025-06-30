@@ -27,7 +27,7 @@ clock = pygame.time.Clock()
 
 def menu_loop() -> None:
     running = True
-    image = pygame.image.load('./img/background2.jpg').convert_alpha()
+    image = pygame.image.load('./assets/background2.jpg').convert_alpha()
     image_rect = image.get_rect()
 
     button_width = 200

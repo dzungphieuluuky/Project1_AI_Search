@@ -6,6 +6,7 @@ DARK_BLUE = (0, 80, 200)
 BLACK = (0, 0, 0)
 
 pygame.init()
+click_sound = pygame.mixer.Sound('./assets/click.mp3')
 font = pygame.font.SysFont("Roboto", 96, bold=True)
 small_font = pygame.font.SysFont("Cascadia Mono", 32)
 
@@ -18,7 +19,7 @@ class Button:
         # callback function to call the function of the button
         self.callback = callback
         self.expandable = expandable
-
+        self.last_hovered = False
         self.is_hovered = False
 
     def draw_button(self, surface: pygame.surface) -> None:
@@ -26,8 +27,11 @@ class Button:
         if self.is_hovered and self.expandable:
             text_surf = pygame.transform.scale_by(text_surf, 1.1)
             pygame.draw.rect(surface, self.color, self.rect.scale_by(1.1, 1.1), border_radius=15)
+            if self.last_hovered == False:
+                click_sound.play()
         else:
             pygame.draw.rect(surface, self.color, self.rect, border_radius=15)
+        self.last_hovered = self.is_hovered
         text_rect = text_surf.get_rect(center=self.rect.center)
         surface.blit(text_surf, text_rect)
 
