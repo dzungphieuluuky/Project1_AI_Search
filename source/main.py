@@ -119,9 +119,9 @@ def start_game() -> None:
                                ZOMP, lambda: None, expandable=False)
     buttons.append(total_cost_button)
 
-    reset_surf = body_font.render('Reset', True, BLACK)
+    reset_surf = body_font.render('Reset (R)', True, BLACK)
     reset_button_y_position = HEIGHT - 60 - reset_surf.get_height()
-    reset_button = Button('Reset', 20, reset_button_y_position,
+    reset_button = Button('Reset (R)', 20, reset_button_y_position,
                           reset_surf.get_width() + 35, reset_surf.get_height() + 35,
                           AMARANTH_PURPLE, start_game)
     buttons.append(reset_button)
@@ -129,14 +129,14 @@ def start_game() -> None:
     def change_play_pause():
         nonlocal pause
         pause = not pause
-        pause_play_button.set_text('Play' if pause else 'Pause')
+        pause_play_button.set_text('Play (P)' if pause else 'Pause (P)')
         print(f'Pause: {pause}') # for debug
 
-    pause_play_surf = body_font.render('Pause', True, BLACK)
-    pause_play_button = Button('Pause', 20, reset_button_y_position - (pause_play_surf.get_height() + 40),
+    pause_play_surf = body_font.render('Pause (P)', True, BLACK)
+    pause_play_button = Button('Pause (P)', 20, reset_button_y_position - (pause_play_surf.get_height() + 40),
                           pause_play_surf.get_width() + 35, pause_play_surf.get_height() + 35,
                           ZOMP, change_play_pause)
-    buttons.append(pause_play_button)    
+    buttons.append(pause_play_button)
 
     running = True
     while running:
@@ -151,9 +151,20 @@ def start_game() -> None:
                 pygame.quit()
                 sys.exit()
             
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                running = False
-            
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                elif event.key == pygame.K_p:
+                    pause_play_button.callback()
+                elif event.key == pygame.K_r:
+                    reset_button.callback()
+                elif event.key in [pygame.K_RIGHT, pygame.K_d]:
+                    selected_algo_index = (selected_algo_index + 1) % len(algo_names)
+                    selected_algo_button.set_text(algo_names[selected_algo_index])
+                elif event.key in [pygame.K_LEFT, pygame.K_a]:
+                    selected_algo_index = (selected_algo_index - 1) % len(algo_names)
+                    selected_algo_button.set_text(algo_names[selected_algo_index])
+
             for button in buttons:
                 button.handle_event(event=event)
         
@@ -164,13 +175,13 @@ def start_game() -> None:
 def introduction_screen() -> None:
     title_font = pygame.font.SysFont("Consolas", 60, bold=True)
     body_font = pygame.font.SysFont("Cascadia Mono", 28)
-    
+    intro_font = pygame.font.SysFont("Consolas", 20)
     introductions = [
         "This app helps you visualize AI search algorithms via Rush Hour Game.",
         "Buttons are floating around to help you navigate better.",
         "Here are some instruction to help you through the game!",
         "1. Use arrow keys (up/down/left/right) or WASD keys to navigate the game.",
-        "2. Select search algorithm (DFS/BFS/UCS/A*) to find a solution.",
+        "2. Select search algorithm (DFS/BFS/UCS/A*) by clicking on the algorithm button.",
         "3. The game ends when the target vehicle satisfies any of 2 conditions:",
         "   <> Successfully exit the map.",
         "   <> Get stuck infinitely in the map.",
@@ -201,7 +212,7 @@ def introduction_screen() -> None:
         screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 50))
 
         for i, line in enumerate(introductions):
-            text = small_font.render(line, True, BLACK)
+            text = intro_font.render(line, True, BLACK)
             screen.blit(text, (20, 150 + 40 * i))
         
         for button in buttons:
