@@ -16,6 +16,7 @@ ZOMP = (81, 158, 138)
 
 # super important line
 pygame.init()
+background_music = pygame.mixer.Sound('./assets/game-background.mp3')
 
 WIDTH = 800
 HEIGHT = 600
@@ -202,6 +203,7 @@ def introduction_screen() -> None:
 
 
 def main():
+    background_music.play(loops=-1)
     menu_loop()
 
 if __name__ == "__main__":
