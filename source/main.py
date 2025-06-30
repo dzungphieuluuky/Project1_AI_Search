@@ -1,4 +1,4 @@
-from menu import Button, font, small_font
+from button import Button, font, small_font
 from game import Game
 import pygame
 import sys
@@ -184,8 +184,8 @@ def introduction_screen() -> None:
         "This app helps you visualize AI search algorithms via Rush Hour Game.",
         "Here are some instruction to help you through the game!",
         "1. Use arrow (up/down/left/right) or WASD keys to navigate the game.",
-        "2. Select search algorithm (DFS/BFS/UCS/A*) by clicking on the algorithm button.",
-        "3. The game ends when the target vehicle satisfies any of 2 conditions:",
+        "2. Change algorithm (DFS/BFS/UCS/A*) by clicking on the algorithm button.",
+        "3. The game ends when the target vehicle meets any of 2 conditions:",
         "   <> Successfully exit the map.",
         "   <> Get stuck infinitely in the map.",
         "4. Click the Start Game below to start the search!"
