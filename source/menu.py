@@ -6,23 +6,24 @@ DARK_BLUE = (0, 80, 200)
 BLACK = (0, 0, 0)
 
 pygame.init()
-font = pygame.font.SysFont("Montserrat", 96, bold=True)
+font = pygame.font.SysFont("Roboto", 96, bold=True)
 small_font = pygame.font.SysFont("Cascadia Mono", 32)
 
 class Button:
     # initialize button class with callback function
-    def __init__(self, text : str, x: float, y: float, width: float, height: float, color: tuple[int, int, int], callback: callable) -> None:
+    def __init__(self, text : str, x: float, y: float, width: float, height: float, color: tuple[int, int, int], callback: callable, expandable = True) -> None:
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.color = color
         # callback function to call the function of the button
         self.callback = callback
+        self.expandable = expandable
 
         self.is_hovered = False
 
     def draw_button(self, surface: pygame.surface) -> None:
         text_surf = small_font.render(self.text, True, WHITE)
-        if self.is_hovered:
+        if self.is_hovered and self.expandable:
             text_surf = pygame.transform.scale_by(text_surf, 1.1)
             pygame.draw.rect(surface, self.color, self.rect.scale_by(1.1, 1.1), border_radius=15)
         else:

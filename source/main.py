@@ -90,6 +90,8 @@ def start_game() -> None:
     
     buttons = []
     selected_algo_index = 0
+    step_count = 0
+    total_cost = 0
 
     def change_algo() -> None:
         nonlocal selected_algo_index
@@ -104,23 +106,20 @@ def start_game() -> None:
     buttons.append(selected_algo_button)
 
     step_count_text_surf = body_font.render('Step count: 0', True, BLACK)
-    step_count_box_rect = pygame.Rect(20, 20 + selected_algo_name.get_height() + 40,
-                                      step_count_text_surf.get_width() + 35, step_count_text_surf.get_height() +35)
-    step_count_text_rect = step_count_text_surf.get_rect(center=step_count_box_rect.center)
+    step_count_button = Button(f'Step count: {step_count}', 20, 20 + selected_algo_name.get_height() + 40,
+                               step_count_text_surf.get_width() + 35, step_count_text_surf.get_height() + 35,
+                               AMARANTH_PURPLE, lambda: None, expandable=False)
+    buttons.append(step_count_button)
 
     total_cost_text_surf = body_font.render('Total cost: 0', True, BLACK)
-    total_cost_box_rect = pygame.Rect(20, 20 + 2 * (selected_algo_name.get_height() + 40),
-                                      total_cost_text_surf.get_width() + 35, total_cost_text_surf.get_height() + 35)
-    total_cost_text_rect = total_cost_text_surf.get_rect(center=total_cost_box_rect.center)
+    total_cost_button = Button(f'Total cost: {total_cost}', 20, 20 + 2 * (selected_algo_name.get_height() + 40),
+                               total_cost_text_surf.get_width() + 35, total_cost_text_surf.get_height() + 35,
+                               ZOMP, lambda: None, expandable=False)
+    buttons.append(total_cost_button)
 
     running = True
     while running:
         screen.fill(ATOMIC_TANGERINE)
-        pygame.draw.rect(screen, AMARANTH_PURPLE, step_count_box_rect, border_radius=15)
-        pygame.draw.rect(screen, ZOMP, total_cost_box_rect, border_radius=15)
-
-        screen.blit(step_count_text_surf, step_count_text_rect)
-        screen.blit(total_cost_text_surf, total_cost_text_rect)
 
         for button in buttons:
             button.draw_button(screen)
