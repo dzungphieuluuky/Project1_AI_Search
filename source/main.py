@@ -3,6 +3,7 @@ from game import Game
 import pygame
 import sys
 
+# Color macro
 WHITE = (255, 255, 255)
 BLUE = (0, 100, 255)
 DARK_BLUE = (0, 80, 200)
@@ -16,6 +17,7 @@ ZOMP = (81, 158, 138)
 
 # super important line
 pygame.init()
+# init background music
 background_music = pygame.mixer.Sound('./assets/game-background.mp3')
 
 WIDTH = 800
@@ -53,6 +55,7 @@ def menu_loop() -> None:
         for button in buttons:
             button.draw_button(screen)
 
+        # event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -176,11 +179,11 @@ def introduction_screen() -> None:
     title_font = pygame.font.SysFont("Consolas", 60, bold=True)
     body_font = pygame.font.SysFont("Cascadia Mono", 28)
     intro_font = pygame.font.SysFont("Consolas", 20)
+
     introductions = [
         "This app helps you visualize AI search algorithms via Rush Hour Game.",
-        "Buttons are floating around to help you navigate better.",
         "Here are some instruction to help you through the game!",
-        "1. Use arrow keys (up/down/left/right) or WASD keys to navigate the game.",
+        "1. Use arrow (up/down/left/right) or WASD keys to navigate the game.",
         "2. Select search algorithm (DFS/BFS/UCS/A*) by clicking on the algorithm button.",
         "3. The game ends when the target vehicle satisfies any of 2 conditions:",
         "   <> Successfully exit the map.",
@@ -211,6 +214,7 @@ def introduction_screen() -> None:
         screen.fill(CREAM)
         screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 50))
 
+        # rendering intro text
         for i, line in enumerate(introductions):
             text = intro_font.render(line, True, BLACK)
             screen.blit(text, (20, 150 + 40 * i))
@@ -218,6 +222,7 @@ def introduction_screen() -> None:
         for button in buttons:
             button.draw_button(screen)
 
+        # event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -234,6 +239,7 @@ def introduction_screen() -> None:
 
 
 def main():
+    # set loops = -1 to play forever
     background_music.play(loops=-1)
     menu_loop()
 

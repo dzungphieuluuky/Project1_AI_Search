@@ -121,9 +121,9 @@ class Game():
                 continue
             
             if self.is_goal(current_state):
-                expanded_nodes += len(expanded)
+                expanded_nodes = len(expanded)
                 end = default_timer()
-                search_time += end - start
+                search_time = end - start
                 this_state = current_state
                 while this_state in parent_of:
                     this_cost = cost_of[this_state]
