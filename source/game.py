@@ -8,8 +8,8 @@ class Game():
     Car map: the initial state and information of each car on the map
     Example of car map:
     {
-        'X': {'orientation': 'H', 'length': 2, 'cost': 2, 'position': (2, 0)}
-        'Y': {'orientation': 'V', 'length': 3, 'cost': 3, 'position': (3, 0)}
+        'X': {'orientation': 'H', 'cost': 2, 'position': (2, 0)}
+        'Y': {'orientation': 'V', 'cost': 3, 'position': (3, 0)}
     }
     H: horizontal
     V: vertical
@@ -30,14 +30,14 @@ class Game():
     
     def is_goal(self, state: dict) -> bool:
         player_car = state['player']
-        return player_car[1] + self.cars_map['player']['length'] - 1 == self.size - 1
+        return player_car[1] + self.cars_map['player']['cost'] - 1 == self.size - 1
     
     def is_free(self, state: dict, row: int, col: int) -> bool:
         if not (0 <= row <= self.size - 1 and 0 <= col <= self.size - 1):
             return False
         for car, info in self.cars_map.items():
             orientation = info['orientation']
-            length = info['length']
+            length = info['cost']
             i_position, j_position = state[car]
             if orientation == 'H':
                 for k in range(length):
