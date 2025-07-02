@@ -91,17 +91,23 @@ def start_game() -> None:
     algo_names = ["Breadth-First Search", "Depth-First Search",
                   "Uniform-Cost Search", "A* Search"]
     
-    game = None
+    is_solved = False
     buttons = []
     selected_algo_index = 0
     selected_map_index = 0
     step_count = 0
     total_cost = 0
     pause = True
+    game = Game(exit_row=2, cars_map=maps[selected_map_index])
 
     def change_algo() -> None:
+        nonlocal pause
+        if not pause:
+            return
         nonlocal selected_algo_index
         nonlocal selected_algo_button
+        nonlocal is_solved
+        is_solved = False
         selected_algo_index = (selected_algo_index + 1) % len(algo_names)
         selected_algo_button.set_text(algo_names[selected_algo_index])
 
@@ -144,6 +150,8 @@ def start_game() -> None:
 
     def change_map():
         nonlocal selected_map_index
+        nonlocal is_solved
+        is_solved = False
         selected_map_index = (selected_map_index + 1) % 11
         map_select_button.set_text(f'Map: {selected_map_index}')
 
@@ -184,9 +192,9 @@ def start_game() -> None:
                 button.handle_event(event=event)
 
             if not pause:
-                if game is None:
-                    game = Game(exit_row=2, cars_map=maps[selected_map_index])
-                    solution, search_time, memory_usage, expanded_nodes = game.algos[selected_algo_index]
+                if not is_solved:
+                    solution, search_time, memory_usage, expanded_nodes = game.algos[selected_algo_index]()
+                    is_solved = True
                     print(f"Solution: {solution}, Search time: {search_time}, Memory usage: {memory_usage}, Expanded nodes: {expanded_nodes}")
         
         pygame.display.flip()

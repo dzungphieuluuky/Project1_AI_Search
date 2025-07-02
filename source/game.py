@@ -27,13 +27,17 @@ class Game():
         self.size = 6
         self.cars_map = cars_map
         self.initial_state = self.get_state_from_map()
-        self.algos = [self.bfs_solver(), self.dfs_solver(), self.ucs_solver(), self.a_star_solver()]
+        self.algos = [self.bfs_solver, self.dfs_solver, self.ucs_solver, self.a_star_solver]
 
     def get_state_from_map(self):
         state = {}
         for car, info in self.cars_map.items():
             state[car] = info['position']
         return state
+    
+    def hash_state(self, state):
+        hash_state = tuple(sorted((id, pos) for id, pos in state.items()))
+        return hash_state
     
     def is_goal(self, state: dict) -> bool:
         player_car = state['player']
@@ -116,7 +120,7 @@ class Game():
         frontier = []
         parent_of = {}
         expanded = set()
-        cost_of = {state: 0} # map from a state to the cost from the initial to that state
+        cost_of = {self.hash_state(state): 0} # map from a state to the cost from the initial to that state
         heapq.heappush(frontier, (0, state))
 
         while not frontier:
@@ -133,7 +137,7 @@ class Game():
                 search_time = end - start
                 this_state = current_state
                 while this_state in parent_of:
-                    this_cost = cost_of[this_state]
+                    this_cost = cost_of[self.hash_state(this_state)]
                     solution.append({'total_cost' : this_cost, 'state' : this_state})
                     this_state = parent_of[this_state]
                 
@@ -149,8 +153,9 @@ class Game():
             
             for next_state, next_cost in self.get_successors(current_state):
                 new_cost = current_cost + next_cost
-                if next_state not in cost_of or cost_of[next_state] > new_cost:
-                    cost_of[next_state] = new_cost
+                hashed_next_state = self.hash_state(next_state)
+                if hashed_next_state not in cost_of or cost_of[hashed_next_state] > new_cost:
+                    cost_of[hashed_next_state] = new_cost
                     heapq.heappush(frontier, (new_cost, next_state))
                     parent_of[next_state] = current_state
         
@@ -160,16 +165,19 @@ class Game():
         tracemalloc.reset_peak()
         memory_usage = memory_peak
         expanded_nodes = len(expanded)
-        return solution, search_time, memory_usage, expanded_nodes
+        return (solution, search_time, memory_usage, expanded_nodes)
     
     def bfs_solver(self):
+        # dummy placeholder
+        return ([], 0, 0, 0)
         # YOUR CODE HERE
-        pass
 
     def dfs_solver(self):
+        # dummy placeholder
+        return ([], 0, 0, 0)
         # YOUR CODE HERE
-        pass
 
     def a_star_solver(self):
+        # dummy placeholder
+        return ([], 0, 0, 0)
         # YOUR CODE HERE
-        pass
