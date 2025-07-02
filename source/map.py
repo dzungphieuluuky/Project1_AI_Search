@@ -1,12 +1,16 @@
+maps = []
+
 map0 = {
     'player': {'orientation': 'H', 'cost': 2, 'position': (2, 0)},
 }
+maps.append(map0)
 
 map1 = {
     'player': {'orientation': 'H', 'cost': 2, 'position': (2, 0)},
     'A': {'orientation': 'V', 'cost': 3, 'position': (0, 3)},
     'B': {'orientation': 'V', 'cost': 3, 'position': (0, 5)},
 }
+maps.append(map1)
 
 map2 = {
     'player': {'orientation': 'H', 'cost': 2, 'position': (2, 0)},
@@ -15,6 +19,7 @@ map2 = {
     'C': {'orientation': 'H', 'cost': 3, 'position': (3, 3)},
     'D': {'orientation': 'H', 'cost': 3, 'position': (4, 3)},
 }
+maps.append(map2)
 
 map3 = {
     'player': {'orientation': 'H', 'cost': 2, 'position': (2, 0)},
@@ -24,6 +29,7 @@ map3 = {
     'D': {'orientation': 'H', 'cost': 3, 'position': (4, 3)},
     'E': {'orientation': 'V', 'cost': 2, 'position': (2, 2)},
 }
+maps.append(map3)
 
 map4 = {
     'player': {'orientation': 'H', 'cost': 2, 'position': (2, 1)},
@@ -34,6 +40,7 @@ map4 = {
     'E': {'orientation': 'V', 'cost': 2, 'position': (3, 2)},
     'F': {'orientation': 'V', 'cost': 3, 'position': (0, 0)},
 }
+maps.append(map4)
 
 map5 = {
     'player': {'orientation': 'H', 'cost': 2, 'position': (2, 1)},
@@ -46,6 +53,7 @@ map5 = {
     'G': {'orientation': 'V', 'cost': 2, 'position': (4, 0)},
     'H': {'orientation': 'H', 'cost': 3, 'position': (4, 3)},
 }
+maps.append(map5)
 
 map6 = {
     'player': {'orientation': 'H', 'cost': 2, 'position': (2, 0)},
@@ -56,7 +64,7 @@ map6 = {
     'E': {'orientation': 'V', 'cost': 2, 'position': (3, 1)},
     'F': {'orientation': 'H', 'cost': 2, 'position': (4, 2)},
 }
-
+maps.append(map6)
 
 map7 = {
     'player': {'orientation': 'H', 'cost': 2, 'position': (2, 3)},
@@ -66,6 +74,7 @@ map7 = {
     'D': {'orientation': 'H', 'cost': 2, 'position': (4, 4)},
     'E': {'orientation': 'V', 'cost': 2, 'position': (3, 3)},
 }
+maps.append(map7)
 
 map8 = {
     'player': {'orientation': 'H', 'cost': 2, 'position': (2, 1)},
@@ -77,6 +86,7 @@ map8 = {
     'F': {'orientation': 'V', 'cost': 2, 'position': (2, 3)},
 
 }
+maps.append(map8)
 
 
 map9 = {
@@ -89,6 +99,7 @@ map9 = {
     'F': {'orientation': 'H', 'cost': 2, 'position': (4, 2)},
     'G': {'orientation': 'H', 'cost': 2, 'position': (0, 4)},
 }
+maps.append(map9)
 
 map10 = {
     'player': {'orientation': 'H', 'cost': 2, 'position': (2, 0)},
@@ -99,5 +110,4 @@ map10 = {
     'E': {'orientation': 'H', 'cost': 2, 'position': (3, 0)},
     'F': {'orientation': 'H', 'cost': 2, 'position': (5, 2)},
 }
-maps = [map0, map1, map2, map3, map4, map5,
-        map6, map7, map8, map9, map10]
+maps.append(map10)
