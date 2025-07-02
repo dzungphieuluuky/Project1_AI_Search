@@ -94,6 +94,7 @@ def start_game() -> None:
     
     buttons = []
     selected_algo_index = 0
+    selected_map_index = 0
     step_count = 0
     total_cost = 0
     pause = False
@@ -140,6 +141,17 @@ def start_game() -> None:
                           pause_play_surf.get_width() + 35, pause_play_surf.get_height() + 35,
                           ZOMP, change_play_pause)
     buttons.append(pause_play_button)
+
+    def change_map():
+        nonlocal selected_map_index
+        selected_map_index = (selected_map_index + 1) % 11
+        map_select_button.set_text(f'Map: {selected_map_index}')
+
+    map_select_surf = body_font.render('Map: 0', True, BLACK)
+    map_select_button = Button(f'Map: 0', 20, reset_button_y_position - 2 * (pause_play_surf.get_height() + 40),
+                               map_select_surf.get_width() + 35, map_select_surf.get_height() + 35,
+                               FRENCH_BLUE, change_map)
+    buttons.append(map_select_button)
 
     running = True
     while running:
