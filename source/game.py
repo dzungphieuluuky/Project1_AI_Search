@@ -75,23 +75,23 @@ class Game():
 
             if orientation == 'H':
                 if self.is_free(state, row, col + 1):
-                    next_state = state
+                    next_state = state.copy()
                     new_col = col + 1
                     next_state[car] = (row, new_col)
                     results.append((next_state, cost))
                 if self.is_free(state, row, col - 1):
-                    next_state = state
+                    next_state = state.copy()
                     new_col = col - 1
                     next_state[car] = (row, new_col)
                     results.append((next_state, cost))    
             else:
                 if self.is_free(state, row + 1, col):
-                    next_state = state
+                    next_state = state.copy()
                     new_row = row + 1
                     next_state[car] = (new_row, col)
                     results.append((next_state, cost))
                 if self.is_free(state, row - 1, col):
-                    next_state = state
+                    next_state = state.copy()
                     new_row = row - 1
                     next_state[car] = (new_row, col)
                     results.append((next_state, cost))
@@ -123,11 +123,12 @@ class Game():
         cost_of = {self.hash_state(state): 0} # map from a state to the cost from the initial to that state
         heapq.heappush(frontier, (0, state))
 
-        while not frontier:
+        while frontier:
             current_cost, current_state = heapq.heappop(frontier)
             
-            if current_state not in expanded:
-                expanded.add(current_state)
+            hashed_current_state = self.hash_state(current_state)
+            if hashed_current_state not in expanded:
+                expanded.add(hashed_current_state)
             else:
                 continue
             
@@ -145,7 +146,7 @@ class Game():
                 solution.append({'total_cost' : 0, 'state': self.initial_state})
                 
                 # reverse the list to get the right order of state
-                solution = reversed(solution)
+                solution = list(reversed(solution))
                 memory_size, memory_peak = tracemalloc.get_traced_memory()
                 tracemalloc.reset_peak()
                 memory_usage = memory_peak
