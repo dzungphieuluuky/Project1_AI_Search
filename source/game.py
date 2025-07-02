@@ -22,11 +22,17 @@ class Game():
     }
     The first is i position, the second is j position
     """
-    def __init__(self, initial_state: dict, exit_row: int, cars_map: dict) -> None:
-        self.initial_state = initial_state
+    def __init__(self, exit_row: int, cars_map: dict) -> None:
         self.exit_row = exit_row
         self.size = 6
         self.cars_map = cars_map
+        self.initial_state = self.get_state_from_map(self.cars_map)
+        
+    def get_state_from_map(self):
+        state = {}
+        for car, info in self.cars_map:
+            state[car] = info['position']
+        return state
     
     def is_goal(self, state: dict) -> bool:
         player_car = state['player']
