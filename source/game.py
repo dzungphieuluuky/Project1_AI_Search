@@ -26,11 +26,12 @@ class Game():
         self.exit_row = exit_row
         self.size = 6
         self.cars_map = cars_map
-        self.initial_state = self.get_state_from_map(self.cars_map)
-        
+        self.initial_state = self.get_state_from_map()
+        self.algos = [self.bfs_solver(), self.dfs_solver(), self.ucs_solver(), self.a_star_solver()]
+
     def get_state_from_map(self):
         state = {}
-        for car, info in self.cars_map:
+        for car, info in self.cars_map.items():
             state[car] = info['position']
         return state
     

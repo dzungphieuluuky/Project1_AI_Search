@@ -1,5 +1,7 @@
 from button import Button, font, small_font
 from game import Game
+from map import *
+
 import pygame
 import sys
 
@@ -89,15 +91,13 @@ def start_game() -> None:
     algo_names = ["Breadth-First Search", "Depth-First Search",
                   "Uniform-Cost Search", "A* Search"]
     
-    # algo_function = [game.bfs_solver, game.dfs_solver,
-    #                  game.ucs_solver, game.a_star_solver]
-    
+    game = None
     buttons = []
     selected_algo_index = 0
     selected_map_index = 0
     step_count = 0
     total_cost = 0
-    pause = False
+    pause = True
 
     def change_algo() -> None:
         nonlocal selected_algo_index
@@ -136,8 +136,8 @@ def start_game() -> None:
         pause_play_button.set_text('Play (P)' if pause else 'Pause (P)')
         print(f'Pause: {pause}') # for debug
 
-    pause_play_surf = body_font.render('Pause (P)', True, BLACK)
-    pause_play_button = Button('Pause (P)', 20, reset_button_y_position - (pause_play_surf.get_height() + 40),
+    pause_play_surf = body_font.render('Play (P)', True, BLACK)
+    pause_play_button = Button('Play (P)', 20, reset_button_y_position - (pause_play_surf.get_height() + 40),
                           pause_play_surf.get_width() + 35, pause_play_surf.get_height() + 35,
                           ZOMP, change_play_pause)
     buttons.append(pause_play_button)
@@ -156,7 +156,7 @@ def start_game() -> None:
     running = True
     while running:
         screen.fill(ATOMIC_TANGERINE)
-
+        
         for button in buttons:
             button.draw_button(screen)
         
@@ -182,6 +182,12 @@ def start_game() -> None:
 
             for button in buttons:
                 button.handle_event(event=event)
+
+            if not pause:
+                if game is None:
+                    game = Game(exit_row=2, cars_map=maps[selected_map_index])
+                    solution, search_time, memory_usage, expanded_nodes = game.algos[selected_algo_index]
+                    print(f"Solution: {solution}, Search time: {search_time}, Memory usage: {memory_usage}, Expanded nodes: {expanded_nodes}")
         
         pygame.display.flip()
         clock.tick(FPS)
