@@ -22,8 +22,8 @@ class Game():
     }
     The first is i position, the second is j position
     """
-    def __init__(self, exit_row: int, cars_map: dict) -> None:
-        self.exit_row = exit_row
+    def __init__(self, cars_map: dict) -> None:
+        self.exit_row = 2
         self.size = 6
         self.cars_map = cars_map
         self.initial_state = self.get_state_from_map()

@@ -98,7 +98,7 @@ def start_game() -> None:
     step_count = 0
     total_cost = 0
     pause = True
-    game = Game(exit_row=2, cars_map=maps[selected_map_index])
+    game = Game(cars_map=maps[selected_map_index])
 
     def change_algo() -> None:
         nonlocal pause
