@@ -225,9 +225,8 @@ def start_game() -> None:
                 step_count_button.set_text(f"Step count: {step_count}")
                 step_count += 1
                 last_render_time = current_time
-                    
-                    
-                # if not solved, then solve and render, if solved then just render. This is the code for render each step.
+            
+            # add render function here
         pygame.display.flip()
         clock.tick(FPS)
 
