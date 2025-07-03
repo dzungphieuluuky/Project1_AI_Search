@@ -20,7 +20,7 @@ class Game():
         'X': (4, 5)
         'Y': (6, 7)
     }
-    The first is i position, the second is j position
+    The first is j position (col), the second is i position (row).
     """
     def __init__(self, cars_map: dict) -> None:
         self.exit_row = 2
@@ -40,23 +40,27 @@ class Game():
         return hash_state
     
     def is_goal(self, state: dict) -> bool:
-        player_car = state['player']
-        return player_car[1] + self.cars_map['player']['cost'] - 1 == self.size - 1
+        position_player = state['player']
+        return position_player[0] + self.cars_map['player']['cost'] - 1 == self.size - 1
     
     def is_free(self, state: dict, row: int, col: int) -> bool:
+        # if the cell is out of bound
         if not (0 <= row <= self.size - 1 and 0 <= col <= self.size - 1):
             return False
+        
         for car, info in self.cars_map.items():
             orientation = info['orientation']
             length = info['cost']
-            i_position, j_position = state[car]
+            col_position, row_position = state[car]
             if orientation == 'H':
+                # if the cell collide with horizontal car
                 for k in range(length):
-                    if (row, col) == (i_position, j_position + k):
+                    if (row, col) == (row_position, col_position + k):
                         return False
             else:
+                # if the cell collide with vertical car
                 for k in range(length):
-                    if (row, col) == (i_position + k, j_position):
+                    if (row, col) == (row_position + k, col_position):
                         return False
         return True
     
@@ -69,31 +73,37 @@ class Game():
         results = []
 
         for car, info in self.cars_map.items():
-            row, col = state[car]
+            col, row = state[car]
             orientation = info['orientation']
             cost = info['cost']
 
+            # horizontal car
             if orientation == 'H':
-                if self.is_free(state, row, col + 1):
+                # check to move right
+                if self.is_free(state, row, col + cost):
                     next_state = state.copy()
                     new_col = col + 1
-                    next_state[car] = (row, new_col)
+                    next_state[car] = (new_col, row)
                     results.append((next_state, cost))
+                # check to move left
                 if self.is_free(state, row, col - 1):
                     next_state = state.copy()
                     new_col = col - 1
-                    next_state[car] = (row, new_col)
+                    next_state[car] = (new_col, row)
                     results.append((next_state, cost))    
+            # vertical car
             else:
-                if self.is_free(state, row + 1, col):
+                # check to move down
+                if self.is_free(state, row + cost, col):
                     next_state = state.copy()
                     new_row = row + 1
-                    next_state[car] = (new_row, col)
+                    next_state[car] = (col, new_row)
                     results.append((next_state, cost))
+                # check to move up
                 if self.is_free(state, row - 1, col):
                     next_state = state.copy()
                     new_row = row - 1
-                    next_state[car] = (new_row, col)
+                    next_state[car] = (col, new_row)
                     results.append((next_state, cost))
         return results
     
@@ -120,11 +130,17 @@ class Game():
         frontier = []
         parent_of = {}
         expanded = set()
-        cost_of = {self.hash_state(state): 0} # map from a state to the cost from the initial to that state
-        heapq.heappush(frontier, (0, state))
+        # hash the state into a tuple to make it be able to used as a key
+        cost_of = {self.hash_state(state): 0}
+
+        # counter used as a secondary comparison when cost is equal
+        # make sure to select following FIFO order
+        counter = 0
+        heapq.heappush(frontier, (0, counter, state))
+        counter += 1
 
         while frontier:
-            current_cost, current_state = heapq.heappop(frontier)
+            current_cost, _, current_state = heapq.heappop(frontier)
             
             hashed_current_state = self.hash_state(current_state)
             if hashed_current_state not in expanded:
@@ -137,10 +153,10 @@ class Game():
                 end = default_timer()
                 search_time = end - start
                 this_state = current_state
-                while this_state in parent_of:
+                while self.hash_state(this_state) in parent_of:
                     this_cost = cost_of[self.hash_state(this_state)]
                     solution.append({'total_cost' : this_cost, 'state' : this_state})
-                    this_state = parent_of[this_state]
+                    this_state = parent_of[self.hash_state(this_state)]
                 
                 # add the initial state
                 solution.append({'total_cost' : 0, 'state': self.initial_state})
@@ -157,8 +173,9 @@ class Game():
                 hashed_next_state = self.hash_state(next_state)
                 if hashed_next_state not in cost_of or cost_of[hashed_next_state] > new_cost:
                     cost_of[hashed_next_state] = new_cost
-                    heapq.heappush(frontier, (new_cost, next_state))
-                    parent_of[next_state] = current_state
+                    heapq.heappush(frontier, (new_cost, counter, next_state))
+                    counter += 1
+                    parent_of[hashed_next_state] = current_state
         
         print("No solution is found!")
         search_time = default_timer() - start

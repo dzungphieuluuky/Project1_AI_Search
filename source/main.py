@@ -193,10 +193,13 @@ def start_game() -> None:
 
             if not pause:
                 if not is_solved:
+                    game = Game(cars_map=maps[selected_map_index])
                     solution, search_time, memory_usage, expanded_nodes = game.algos[selected_algo_index]()
                     is_solved = True
+                    print(f"Map: {selected_map_index}, Algorithm: {algo_names[selected_algo_index]}")
                     print(f"Solution: {solution}, Search time: {search_time}, Memory usage: {memory_usage}, Expanded nodes: {expanded_nodes}")
         
+                # if not solved, then solve and render, if solved then just render. This is the code for render each step.
         pygame.display.flip()
         clock.tick(FPS)
 
