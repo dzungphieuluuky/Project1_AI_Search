@@ -111,6 +111,10 @@ def start_game() -> None:
         nonlocal selected_algo_button
         nonlocal is_solved
         is_solved = False
+        total_cost = 0
+        step_count = 0
+        total_cost_button.set_text(f'Total cost: {total_cost}')
+        step_count_button.set_text(f'Step count: {step_count}')
         selected_algo_index = (selected_algo_index + 1) % len(algo_names)
         selected_algo_button.set_text(algo_names[selected_algo_index])
 
@@ -152,10 +156,17 @@ def start_game() -> None:
     buttons.append(pause_play_button)
 
     def change_map():
+        nonlocal pause
+        if not pause:
+            return
         nonlocal selected_map_index
         nonlocal is_solved
+        total_cost = 0
+        step_count = 0
         is_solved = False
         selected_map_index = (selected_map_index + 1) % 11
+        total_cost_button.set_text(f'Total cost: {total_cost}')
+        step_count_button.set_text(f'Step count: {step_count}')
         map_select_button.set_text(f'Map: {selected_map_index}')
 
     map_select_surf = body_font.render('Map: 0', True, BLACK)
@@ -204,8 +215,11 @@ def start_game() -> None:
                 solution, search_time, memory_usage, expanded_nodes = game.algos[selected_algo_index]()
                 is_solved = True
                 print(f"Map: {selected_map_index}, Algorithm: {algo_names[selected_algo_index]}")
-                print(f"Solution: {solution}, Search time: {search_time}, Memory usage: {memory_usage}, Expanded nodes: {expanded_nodes}")
-                print(f"Total cost: {solution[-1]['total_cost']}, Step counts: {len(solution) - 1}")
+                if len(solution) > 0:
+                    print('No solution found')
+                else:
+                    print(f"Solution: {solution}, Search time: {search_time}, Memory usage: {memory_usage}, Expanded nodes: {expanded_nodes}")
+                    print(f"Total cost: {solution[-1]['total_cost']}, Step counts: {len(solution) - 1}")
             if current_time - last_render_time >= DELAY_TIME and step_count < len(solution):
                 total_cost_button.set_text(f"Total cost: {solution[step_count]['total_cost']}")
                 step_count_button.set_text(f"Step count: {step_count}")
