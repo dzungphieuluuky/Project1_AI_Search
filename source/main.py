@@ -2,6 +2,7 @@ from button import Button, font, small_font
 from game import Game
 from map import *
 
+
 import pygame
 import sys
 
@@ -17,6 +18,7 @@ FRENCH_BLUE = (0, 114, 187)
 CREAM = (239, 242, 192)
 ZOMP = (81, 158, 138)
 
+DELAY_TIME = 1000
 # super important line
 pygame.init()
 # init background music
@@ -98,6 +100,7 @@ def start_game() -> None:
     step_count = 0
     total_cost = 0
     pause = True
+    last_render_time = 0
     game = Game(cars_map=maps[selected_map_index])
 
     def change_algo() -> None:
@@ -191,14 +194,25 @@ def start_game() -> None:
             for button in buttons:
                 button.handle_event(event=event)
 
-            if not pause:
-                if not is_solved:
-                    game = Game(cars_map=maps[selected_map_index])
-                    solution, search_time, memory_usage, expanded_nodes = game.algos[selected_algo_index]()
-                    is_solved = True
-                    print(f"Map: {selected_map_index}, Algorithm: {algo_names[selected_algo_index]}")
-                    print(f"Solution: {solution}, Search time: {search_time}, Memory usage: {memory_usage}, Expanded nodes: {expanded_nodes}")
-        
+        current_time = pygame.time.get_ticks()
+
+        if not pause:
+            if not is_solved:
+                game = Game(cars_map=maps[selected_map_index])
+                total_cost = 0
+                step_count = 0
+                solution, search_time, memory_usage, expanded_nodes = game.algos[selected_algo_index]()
+                is_solved = True
+                print(f"Map: {selected_map_index}, Algorithm: {algo_names[selected_algo_index]}")
+                print(f"Solution: {solution}, Search time: {search_time}, Memory usage: {memory_usage}, Expanded nodes: {expanded_nodes}")
+                print(f"Total cost: {solution[-1]['total_cost']}, Step counts: {len(solution) - 1}")
+            if current_time - last_render_time >= DELAY_TIME and step_count < len(solution):
+                total_cost_button.set_text(f"Total cost: {solution[step_count]['total_cost']}")
+                step_count_button.set_text(f"Step count: {step_count}")
+                step_count += 1
+                last_render_time = current_time
+                    
+                    
                 # if not solved, then solve and render, if solved then just render. This is the code for render each step.
         pygame.display.flip()
         clock.tick(FPS)
