@@ -176,14 +176,8 @@ class Game():
                     heapq.heappush(frontier, (new_cost, counter, next_state))
                     counter += 1
                     parent_of[hashed_next_state] = current_state
-        
-        print("No solution is found!")
-        search_time = default_timer() - start
-        memory_size, memory_peak = tracemalloc.get_traced_memory()
-        tracemalloc.reset_peak()
-        memory_usage = memory_peak
-        expanded_nodes = len(expanded)
-        return (solution, search_time, memory_usage, expanded_nodes)
+        # if no solution
+        return [solution, 0, 0, 0]
     
     def bfs_solver(self):
         # dummy placeholder
