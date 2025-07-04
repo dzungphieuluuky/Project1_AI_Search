@@ -28,6 +28,11 @@ WIDTH = 800
 HEIGHT = 600
 FPS = 60
 
+GRID_SIZE = 80
+GRID_ORIGIN = (300, 90)
+ASSETS_PATH = "./assets"
+SCREEN = pygame.display.set_mode((800, 600))
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Rush Hour AI Search Visualizer")
 clock = pygame.time.Clock()
@@ -101,8 +106,7 @@ def start_game() -> None:
     total_cost = 0
     pause = True
     last_render_time = 0
-    game = Game(cars_map=maps[selected_map_index])
-
+    game = Game(maps[selected_map_index], SCREEN, GRID_SIZE, GRID_ORIGIN, ASSETS_PATH)
     def change_algo() -> None:
         nonlocal pause
         if not pause:
@@ -209,7 +213,7 @@ def start_game() -> None:
 
         if not pause:
             if not is_solved:
-                game = Game(cars_map=maps[selected_map_index])
+                game = Game(maps[selected_map_index], SCREEN, GRID_SIZE, GRID_ORIGIN, ASSETS_PATH)
                 total_cost = 0
                 step_count = 0
                 solution, search_time, memory_usage, expanded_nodes = game.algos[selected_algo_index]()
@@ -227,6 +231,7 @@ def start_game() -> None:
                 last_render_time = current_time
             
             # add render function here
+            game.draw_all_sprites()
         pygame.display.flip()
         clock.tick(FPS)
 

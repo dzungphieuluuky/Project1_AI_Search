@@ -2,7 +2,8 @@ import heapq
 import pygame
 from timeit import default_timer
 import tracemalloc
-
+import os
+from vehicle import Car, Truck
 class Game():
     """
     Car map: the initial state and information of each car on the map
@@ -22,12 +23,28 @@ class Game():
     }
     The first is j position (col), the second is i position (row).
     """
-    def __init__(self, cars_map: dict) -> None:
+    def __init__(self, cars_map: dict, screen, grid_size, grid_origin, assets_path) -> None:
         self.exit_row = 2
         self.size = 6
         self.cars_map = cars_map
         self.initial_state = self.get_state_from_map()
         self.algos = [self.bfs_solver, self.dfs_solver, self.ucs_solver, self.a_star_solver]
+
+        self.grid_size = grid_size
+        self.grid_origin = grid_origin
+        self.assets_path = assets_path
+        self.screen = screen
+        self.vehicles = []
+        for id, info in self.cars_map.items():
+            col, row = info['position']
+            orientation = info['orientation']
+            length = info['cost']
+            if length == 2:
+                self.vehicles.append(Car(id, col, row, orientation))
+            else:
+                self.vehicles.append(Truck(id, col, row, orientation))
+        self.background_image = pygame.image.load(os.path.join(self.assets_path, "map.png")).convert()
+        self.background_image = pygame.transform.scale(self.background_image,(self.grid_size * self.size, self.grid_size * self.size))
 
     def get_state_from_map(self):
         state = {}
@@ -66,7 +83,19 @@ class Game():
     
     # nap code Thinh Bui vao day
     def draw_all_sprites(self) -> None:
-        pass
+        x0, y0 = self.grid_origin
+        map_width = self.size * self.grid_size
+        map_height = self.size * self.grid_size
+        self.screen.blit(self.background_image, (x0, y0))
+        pygame.draw.rect(self.screen, (0, 102, 0), (x0, y0, map_width, map_height), width = 4)
+        exit_rect = pygame.Rect(x0 + self.size * self.grid_size, y0 + self.exit_row * self.grid_size, 20, self.grid_size)
+        pygame.draw.rect(self.screen, (204, 102, 0), exit_rect)
+        for vehicle in self.vehicles:
+            image = vehicle.draw(self.assets_path, self.grid_size)
+            x = x0 + vehicle.col * self.grid_size
+            y = y0 + vehicle.row * self.grid_size
+            self.screen.blit(image, (x, y))
+        pygame.display.flip()
 
     def get_successors(self, state: dict) -> list[tuple[dict, int]]:
         # list of next posisble states and cost
