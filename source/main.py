@@ -215,8 +215,8 @@ def start_game() -> None:
                 solution, search_time, memory_usage, expanded_nodes = game.algos[selected_algo_index]()
                 is_solved = True
                 print(f"Map: {selected_map_index}, Algorithm: {algo_names[selected_algo_index]}")
-                if len(solution) > 0:
-                    print('No solution found')
+                if len(solution) == 0:
+                    print(f"No solution found!")
                 else:
                     print(f"Solution: {solution}, Search time: {search_time}, Memory usage: {memory_usage}, Expanded nodes: {expanded_nodes}")
                     print(f"Total cost: {solution[-1]['total_cost']}, Step counts: {len(solution) - 1}")
@@ -296,7 +296,7 @@ def introduction_screen() -> None:
 
 def main():
     # set loops = -1 to play forever
-    background_music.play(loops=-1)
+    # background_music.play(loops=-1)
     menu_loop()
 
 if __name__ == "__main__":
