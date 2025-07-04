@@ -1,11 +1,19 @@
 map0 = {
     'player': {'orientation': 'H', 'cost': 2, 'position': (0, 2)},
+    'A': {'orientation': 'H', 'cost': 2, 'position': (0, 0)},
+    'B': {'orientation': 'H', 'cost': 2, 'position': (0, 1)},
+    'C': {'orientation': 'H', 'cost': 2, 'position': (0, 3)},
+    'D': {'orientation': 'H', 'cost': 2, 'position': (0, 4)},
+    'E': {'orientation': 'H', 'cost': 2, 'position': (0, 5)},
 }
 
 map1 = {
     'player': {'orientation': 'H', 'cost': 2, 'position': (0, 2)},
-    'A': {'orientation': 'V', 'cost': 3, 'position': (3, 0)},
-    'B': {'orientation': 'V', 'cost': 3, 'position': (5, 0)},
+    'A': {'orientation': 'V', 'cost': 3, 'position': (3, 2)},
+    'B': {'orientation': 'V', 'cost': 3, 'position': (5, 2)},
+    'C': {'orientation': 'H', 'cost': 2, 'position': (0, 3)},
+    'D': {'orientation': 'H', 'cost': 2, 'position': (0, 4)},
+    'E': {'orientation': 'H', 'cost': 2, 'position': (0, 5)},
 }
 
 map2 = {
@@ -22,7 +30,7 @@ map3 = {
     'B': {'orientation': 'V', 'cost': 3, 'position': (5, 0)},
     'C': {'orientation': 'H', 'cost': 3, 'position': (3, 3)},
     'D': {'orientation': 'H', 'cost': 3, 'position': (3, 4)},
-    'E': {'orientation': 'V', 'cost': 2, 'position': (2, 2)},
+    'E': {'orientation': 'V', 'cost': 3, 'position': (2, 2)},
 }
 
 map4 = {
