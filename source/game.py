@@ -23,7 +23,7 @@ class Game():
     }
     The first is j position (col), the second is i position (row).
     """
-    def __init__(self, cars_map: dict, screen, grid_size, grid_origin, assets_path) -> None:
+    def __init__(self, cars_map: dict, screen : pygame.Surface, grid_size : int, grid_origin: tuple[int, int], assets_path: str) -> None:
         self.exit_row = 2
         self.size = 6
         self.cars_map = cars_map
@@ -81,7 +81,6 @@ class Game():
                         return False
         return True
     
-    # nap code Thinh Bui vao day
     def draw_all_sprites(self) -> None:
         x0, y0 = self.grid_origin
         map_width = self.size * self.grid_size
