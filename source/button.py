@@ -1,5 +1,5 @@
 import pygame
-
+from typing import Union
 WHITE = (255, 255, 255)
 BLUE = (0, 100, 255)
 DARK_BLUE = (0, 80, 200)
@@ -13,7 +13,7 @@ small_font = pygame.font.SysFont("Cascadia Mono", 32)
 
 class Button:
     # initialize button class with callback function
-    def __init__(self, text : str, x: float, y: float, width: float, height: float, color: tuple[int, int, int], callback: callable, expandable = True) -> None:
+    def __init__(self, text : Union[str, pygame.Surface], x: float, y: float, width: float, height: float, color: tuple[int, int, int], callback: callable, expandable = True) -> None:
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.color = color
@@ -24,17 +24,27 @@ class Button:
         self.is_hovered = False
 
     def draw_button(self, surface: pygame.surface) -> None:
-        text_surf = small_font.render(self.text, True, WHITE)
-        if self.is_hovered and self.expandable:
-            text_surf = pygame.transform.scale_by(text_surf, 1.1)
-            pygame.draw.rect(surface, self.color, self.rect.scale_by(1.1, 1.1), border_radius=15)
-            if self.last_hovered == False:
-                hover_sound.play()
+        if isinstance(self.text, pygame.Surface):
+            text_surf = self.text
+            if self.is_hovered and self.expandable:
+                text_surf = pygame.transform.scale_by(text_surf, 1.1)
+                if self.last_hovered == False:
+                    hover_sound.play()
+            self.last_hovered = self.is_hovered
+            text_rect = text_surf.get_rect(center=self.rect.center)
+            surface.blit(text_surf, text_rect)
         else:
-            pygame.draw.rect(surface, self.color, self.rect, border_radius=15)
-        self.last_hovered = self.is_hovered
-        text_rect = text_surf.get_rect(center=self.rect.center)
-        surface.blit(text_surf, text_rect)
+            text_surf = small_font.render(self.text, True, WHITE)
+            if self.is_hovered and self.expandable:
+                text_surf = pygame.transform.scale_by(text_surf, 1.1)
+                pygame.draw.rect(surface, self.color, self.rect.scale_by(1.1, 1.1), border_radius=15)
+                if self.last_hovered == False:
+                    hover_sound.play()
+            else:
+                pygame.draw.rect(surface, self.color, self.rect, border_radius=15)
+            self.last_hovered = self.is_hovered
+            text_rect = text_surf.get_rect(center=self.rect.center)
+            surface.blit(text_surf, text_rect)
 
     def handle_event(self, event: pygame.event) -> None:
         if event.type == pygame.MOUSEMOTION:

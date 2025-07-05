@@ -146,6 +146,13 @@ def start_game() -> None:
                           AMARANTH_PURPLE, start_game)
     buttons.append(reset_button)
 
+    quit_image = pygame.image.load('./assets/quit_button.png').convert_alpha()
+    quit_image = pygame.transform.scale_by(quit_image, 0.12)
+    quit_button = Button(quit_image, WIDTH - 20 - quit_image.get_width(), 20,
+                         quit_image.get_width(), quit_image.get_height(),
+                         None, quit_game)
+    buttons.append(quit_button)
+
     def change_play_pause():
         nonlocal pause
         pause = not pause
@@ -188,8 +195,7 @@ def start_game() -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                pygame.quit()
-                sys.exit()
+                quit_game()
             
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -303,6 +309,9 @@ def introduction_screen() -> None:
         pygame.display.flip()
         clock.tick(FPS)
 
+def quit_game():
+    pygame.quit()
+    sys.exit()
 
 def main():
     # set loops = -1 to play forever
