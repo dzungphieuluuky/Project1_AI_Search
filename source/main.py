@@ -2,6 +2,7 @@ from button import *
 from sound import *
 from game import Game
 from map import *
+from font import *
 
 
 import pygame
@@ -92,8 +93,6 @@ def menu_loop() -> None:
         clock.tick(FPS)
 
 def start_game() -> None:
-    body_font = pygame.font.SysFont("Consolas", 24)
-
     algo_names = ["Breadth-First Search", "Depth-First Search",
                   "Uniform-Cost Search", "A* Search"]
     
@@ -121,25 +120,25 @@ def start_game() -> None:
         selected_algo_index = (selected_algo_index + 1) % len(algo_names)
         selected_algo_button.set_text(algo_names[selected_algo_index])
 
-    selected_algo_name = body_font.render('Breadth-First Search', True, BLACK)
+    selected_algo_name = button_font.render('Breadth-First Search', True, BLACK)
     selected_algo_button = Button('Breadth-First Search', 20, 20,
                                   selected_algo_name.get_width() + 35, selected_algo_name.get_height() + 35, 
                                   FRENCH_BLUE, change_algo)
     buttons.append(selected_algo_button)
 
-    step_count_text_surf = body_font.render('Step count: 0', True, BLACK)
+    step_count_text_surf = button_font.render('Step count: 0', True, BLACK)
     step_count_button = Button(f'Step count: {step_count}', 20, 20 + selected_algo_name.get_height() + 40,
                                step_count_text_surf.get_width() + 35, step_count_text_surf.get_height() + 35,
                                AMARANTH_PURPLE, lambda: None, expandable=False)
     buttons.append(step_count_button)
 
-    total_cost_text_surf = body_font.render('Total cost: 0', True, BLACK)
+    total_cost_text_surf = button_font.render('Total cost: 0', True, BLACK)
     total_cost_button = Button(f'Total cost: {total_cost}', 20, 20 + 2 * (selected_algo_name.get_height() + 40),
                                total_cost_text_surf.get_width() + 35, total_cost_text_surf.get_height() + 35,
                                ZOMP, lambda: None, expandable=False)
     buttons.append(total_cost_button)
 
-    reset_surf = body_font.render('Reset (R)', True, BLACK)
+    reset_surf = button_font.render('Reset (R)', True, BLACK)
     reset_button_y_position = HEIGHT - 60 - reset_surf.get_height()
     reset_button = Button('Reset (R)', 20, reset_button_y_position,
                           reset_surf.get_width() + 35, reset_surf.get_height() + 35,
@@ -159,7 +158,7 @@ def start_game() -> None:
         pause_play_button.set_text('Play (P)' if pause else 'Pause (P)')
         print(f'Pause: {pause}') # for debug
 
-    pause_play_surf = body_font.render('Play (P)', True, BLACK)
+    pause_play_surf = button_font.render('Play (P)', True, BLACK)
     pause_play_button = Button('Play (P)', 20, reset_button_y_position - (pause_play_surf.get_height() + 40),
                           pause_play_surf.get_width() + 35, pause_play_surf.get_height() + 35,
                           ZOMP, change_play_pause)
@@ -179,7 +178,7 @@ def start_game() -> None:
         step_count_button.set_text(f'Step count: {step_count}')
         map_select_button.set_text(f'Map: {selected_map_index}')
 
-    map_select_surf = body_font.render('Map: 0', True, BLACK)
+    map_select_surf = button_font.render('Map: 0', True, BLACK)
     map_select_button = Button(f'Map: 0', 20, reset_button_y_position - 2 * (pause_play_surf.get_height() + 40),
                                map_select_surf.get_width() + 35, map_select_surf.get_height() + 35,
                                FRENCH_BLUE, change_map)
@@ -238,6 +237,10 @@ def start_game() -> None:
                 step_count += 1
                 last_render_time = current_time
             
+            if step_count > 0 and step_count == len(solution):
+                congrats_screen(selected_map_index, algo_names[selected_algo_index],
+                                step_count, total_cost, is_solved)
+            
             # add render function here
         game.draw_all_sprites()
         pygame.display.flip()
@@ -245,10 +248,6 @@ def start_game() -> None:
 
 
 def introduction_screen() -> None:
-    title_font = pygame.font.SysFont("Consolas", 60, bold=True)
-    body_font = pygame.font.SysFont("Cascadia Mono", 28)
-    intro_font = pygame.font.SysFont("Consolas", 20)
-
     introductions = [
         "This app helps you visualize AI search algorithms via Rush Hour Game.",
         "Here are some instruction to help you through the game!",
@@ -264,14 +263,14 @@ def introduction_screen() -> None:
 
     title = title_font.render("Introduction", True, BLACK)
 
-    back_button_title = body_font.render("Back to Menu", True, BLACK)
+    back_button_title = button_font.render("Back to Menu", True, BLACK)
     back_button_width = back_button_title.get_width() + 35
     back_button_height = back_button_title.get_height() + 35
     back_button = Button("Back to Menu", WIDTH - 20 - back_button_width, 20, 
                             back_button_width, back_button_height, ATOMIC_TANGERINE, menu_loop)
     buttons.append(back_button)
 
-    start_button_title = body_font.render("Start Game", True, BLACK)
+    start_button_title = button_font.render("Start Game", True, BLACK)
     start_button_width = start_button_title.get_width() + 35
     start_button_height = start_button_title.get_height() + 35
     start_button = Button("Start Game", WIDTH // 2 - start_button_width // 2,HEIGHT - 20 - start_button_height, 
@@ -305,6 +304,87 @@ def introduction_screen() -> None:
     
         pygame.display.flip()
         clock.tick(FPS)
+
+def congrats_screen(map_num: int, algo: str, step_count: int, cost: int, is_solved: bool) -> None:
+    buttons = []
+
+    top = HEIGHT // 4
+    left = WIDTH // 4
+    width = WIDTH // 2
+    height = HEIGHT // 2
+    box_rect = pygame.Rect(left, top, width, height)
+
+    # Render text
+    lines = [
+        "Congratulations!",
+        f"Map {map_num} has been",
+        f"solved with {algo}!",
+        f"Step count: {step_count}",
+        f"Total cost: {cost}"
+    ]
+    reset_surf = button_font.render('Reset (R)', True, BLACK)
+    reset_button_x_position = left + 20
+    reset_button_y_position = top + height - 20 - reset_surf.get_height()
+    reset_button = Button('Reset (R)', reset_button_x_position, reset_button_y_position,
+                          reset_surf.get_width() + 35, reset_surf.get_height() + 35,
+                          FRENCH_BLUE, start_game)
+    buttons.append(reset_button)
+
+    quit_surf = button_font.render('Quit (Q)', True, BLACK)
+    quit_button_x_position = left + width - 20 - quit_surf.get_width()
+    quit_button = Button('Quit (Q)', quit_button_x_position, reset_button_y_position,
+                         quit_surf.get_width() + 35, quit_surf.get_height() + 35,
+                         AMARANTH_PURPLE, quit_game)
+    buttons.append(quit_button)
+
+    def replay():
+        nonlocal running
+        nonlocal is_solved
+        is_solved = False
+        running = False
+
+    replay_surf = button_font.render('RePlay (P)', True, BLACK)
+    replay_button_x_position = (reset_button_x_position + reset_surf.get_width() + quit_button_x_position) // 2 - (replay_surf.get_width() // 2)
+    replay_button = Button('RePlay (P)', replay_button_x_position, reset_button_y_position,
+                           replay_surf.get_width() + 35, replay_surf.get_height() + 35,
+                           ZOMP, replay)
+    buttons.append(replay_button)
+
+
+    running = True
+    while running:
+        screen.fill(CREAM)
+        
+        pygame.draw.rect(screen, WHITE, box_rect, border_radius=40)
+        pygame.draw.rect(screen, BLACK, box_rect, 2, border_radius=40)
+        for i, line in enumerate(lines):
+            text_surf = title_font.render(line, True, BLACK)
+            text_rect = text_surf.get_rect(center=(WIDTH//2, 160 + i * 40))
+            screen.blit(text_surf, text_rect)
+
+        # Draw buttons
+        for button in buttons:
+            button.draw_button(screen)
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quit_game()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                elif event.key == pygame.K_r:
+                    reset_button.callback()
+                elif event.key == pygame.K_p:
+                    replay_button.callback()
+                elif event.key == pygame.K_q:
+                    quit_button.callback()
+
+            for button in buttons:
+                button.handle_event(event)
+
+        pygame.display.flip()
+        clock.tick(60)
 
 def quit_game():
     pygame.quit()

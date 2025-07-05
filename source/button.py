@@ -2,6 +2,7 @@ import pygame
 from typing import Union
 
 from sound import *
+from font import *
 
 WHITE = (255, 255, 255)
 BLUE = (0, 100, 255)
@@ -9,8 +10,6 @@ DARK_BLUE = (0, 80, 200)
 BLACK = (0, 0, 0)
 
 pygame.init()
-font = pygame.font.SysFont("Roboto", 96, bold=True)
-small_font = pygame.font.SysFont("Cascadia Mono", 32)
 
 class Button:
     # initialize button class with callback function
@@ -27,7 +26,7 @@ class Button:
     def draw_button(self, surface: pygame.surface) -> None:
         present_surf = self.present
         if isinstance(self.present, str):
-            present_surf = small_font.render(self.present, True, WHITE)
+            present_surf = button_font.render(self.present, True, WHITE)
         if self.is_hovered and self.expandable:
             present_surf = pygame.transform.scale_by(present_surf, 1.1)
             if isinstance(self.present, str):
