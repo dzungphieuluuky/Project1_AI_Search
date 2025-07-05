@@ -234,10 +234,7 @@ def start_game() -> None:
                 total_cost_button.set_text(f"Total cost: {solution[step_count]['total_cost']}")
                 step_count_button.set_text(f"Step count: {step_count}")
                 for car_id, position in solution[step_count]['state'].items():
-                    for vehicle in game.vehicles:
-                        if vehicle.get_id() == car_id:
-                            vehicle.col, vehicle.row = position
-                            break
+                    game.vehicles[car_id].col, game.vehicles[car_id].row = position
                 step_count += 1
                 last_render_time = current_time
             

@@ -34,15 +34,15 @@ class Game():
         self.grid_origin = grid_origin
         self.assets_path = assets_path
         self.screen = screen
-        self.vehicles = []
+        self.vehicles = {}
         for id, info in self.cars_map.items():
             col, row = info['position']
             orientation = info['orientation']
             length = info['cost']
             if length == 2:
-                self.vehicles.append(Car(id, col, row, orientation))
+                self.vehicles[id] = Car(id, col, row, orientation)
             else:
-                self.vehicles.append(Truck(id, col, row, orientation))
+                self.vehicles[id] = Truck(id, col, row, orientation)
         self.background_image = pygame.image.load(os.path.join(self.assets_path, "map.png")).convert()
         self.background_image = pygame.transform.scale(self.background_image,(self.grid_size * self.size, self.grid_size * self.size))
 
@@ -89,7 +89,7 @@ class Game():
         pygame.draw.rect(self.screen, (0, 102, 0), (x0, y0, map_width, map_height), width = 4)
         exit_rect = pygame.Rect(x0 + self.size * self.grid_size, y0 + self.exit_row * self.grid_size, 20, self.grid_size)
         pygame.draw.rect(self.screen, (204, 102, 0), exit_rect)
-        for vehicle in self.vehicles:
+        for vehicle in self.vehicles.values():
             image = vehicle.draw(self.assets_path, self.grid_size)
             x = x0 + vehicle.col * self.grid_size
             y = y0 + vehicle.row * self.grid_size
