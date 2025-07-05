@@ -308,10 +308,10 @@ def introduction_screen() -> None:
 def congrats_screen(map_num: int, algo: str, step_count: int, cost: int, is_solved: bool) -> None:
     buttons = []
 
-    top = HEIGHT // 4
-    left = WIDTH // 4
-    width = WIDTH // 2
-    height = HEIGHT // 2
+    top = HEIGHT // 8
+    left = WIDTH // 8
+    width = WIDTH // 1.5
+    height = HEIGHT // 1.5
     box_rect = pygame.Rect(left, top, width, height)
 
     # Render text
@@ -323,15 +323,15 @@ def congrats_screen(map_num: int, algo: str, step_count: int, cost: int, is_solv
         f"Total cost: {cost}"
     ]
     reset_surf = button_font.render('Reset (R)', True, BLACK)
-    reset_button_x_position = left + 20
-    reset_button_y_position = top + height - 20 - reset_surf.get_height()
+    reset_button_x_position = left + 40
+    reset_button_y_position = top + height - 40 - reset_surf.get_height()
     reset_button = Button('Reset (R)', reset_button_x_position, reset_button_y_position,
                           reset_surf.get_width() + 35, reset_surf.get_height() + 35,
                           FRENCH_BLUE, start_game)
     buttons.append(reset_button)
 
     quit_surf = button_font.render('Quit (Q)', True, BLACK)
-    quit_button_x_position = left + width - 20 - quit_surf.get_width()
+    quit_button_x_position = left + width - 40 - quit_surf.get_width()
     quit_button = Button('Quit (Q)', quit_button_x_position, reset_button_y_position,
                          quit_surf.get_width() + 35, quit_surf.get_height() + 35,
                          AMARANTH_PURPLE, quit_game)

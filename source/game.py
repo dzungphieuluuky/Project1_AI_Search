@@ -193,7 +193,7 @@ class Game():
                 memory_size, memory_peak = tracemalloc.get_traced_memory()
                 tracemalloc.reset_peak()
                 memory_usage = memory_peak
-                return solution, search_time, memory_usage, expanded_nodes
+                return (solution, search_time, memory_usage, expanded_nodes)
             
             for next_state, next_cost in self.get_successors(current_state):
                 new_cost = current_cost + next_cost
@@ -204,7 +204,7 @@ class Game():
                     counter += 1
                     parent_of[hashed_next_state] = current_state
         # if no solution
-        return [solution, 0, 0, 0]
+        return (solution, 0, 0, 0)
     
     def bfs_solver(self):
         # dummy placeholder
@@ -362,7 +362,7 @@ class Game():
                 memory_size, memory_peak = tracemalloc.get_traced_memory()
                 tracemalloc.reset_peak()
                 memory_usage = memory_peak
-                return solution, search_time, memory_usage, expanded_nodes
+                return (solution, search_time, memory_usage, expanded_nodes)
 
             for next_state, step_cost in self.get_successors(current_state):
                 new_g = g_cost + step_cost
@@ -374,4 +374,4 @@ class Game():
                     heapq.heappush(frontier, (new_g + h, counter, new_g, next_state))
                     counter += 1
         # if no solution
-        return [solution, 0, 0, 0]
+        return (solution, 0, 0, 0)
