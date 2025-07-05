@@ -135,7 +135,7 @@ class Game():
                     results.append((next_state, cost))
         return results
     
-    def ucs_solver(self) -> tuple[list, int, int, int]:
+    def ucs_solver(self) -> tuple[list[dict], int, int, int]:
         ''' 
         Solution is a list of dictionaries each contains: state, total cost
         Example of a solution:
@@ -217,7 +217,162 @@ class Game():
         return ([], 0, 0, 0)
         # YOUR CODE HERE
 
-    def a_star_solver(self):
-        # dummy placeholder
-        return ([], 0, 0, 0)
-        # YOUR CODE HERE
+    def heuristic(self, state: dict) -> int:
+        if self.is_goal(state):
+            return 0
+
+        goal_car = 'player'
+        self.visited = set()
+        self.visited.add(goal_car)
+
+        col, _ = state[goal_car]
+        len = self.cars_map[goal_car]['cost']
+
+        # k/c còn lại đến đích
+        value = len * (self.size - (col + len))
+        
+        blocker = self.get_blocker(state, goal_car, 'forward', self.size)
+        if blocker is not None:
+            forward = self.heuristic2(state, blocker, goal_car, direction='forward')
+            self.visited = set()
+            self.visited.add(goal_car)
+            backward = self.heuristic2(state, blocker, goal_car, direction='backward')
+            value += min(forward, backward)
+        #print("heu: ",value)
+        return value
+    
+    def heuristic2(self, state: dict, car: str, car2: str, direction: str) -> int: 
+        #tính chi phí car đi theo direc thoát khỏi car2
+        if car in self.visited:
+            return 0
+
+        self.visited.add(car)
+        col, row = state[car]
+        orientation = self.cars_map[car]['orientation']
+        length = self.cars_map[car]['cost']
+
+        #  trục cần thoát
+        target_axis = state[car2][1] if self.cars_map[car2]['orientation'] == 'H' else state[car2][0]
+
+        # bị tường chắn
+        if direction == 'forward' and target_axis + length >= self.size:
+            return float('inf')
+        if direction == 'backward' and target_axis < length:
+            return float('inf')
+        if direction == 'forward':
+            step = target_axis + 1 - col if orientation == 'H' else target_axis + 1 - row
+        else:
+            step = col - (target_axis - length) if orientation == 'H' else row - (target_axis - length)  
+
+
+        # không bị tường, bị blocker
+        blocker = self.get_blocker(state, car, direction, step)
+        if blocker:
+            forward = self.heuristic2(state, blocker, car, 'forward')
+            self.visited.remove(blocker)
+            backward = self.heuristic2(state, blocker, car, 'backward')
+            self.visited.remove(blocker)
+            blocker_cost = min(forward, backward)
+            if blocker_cost == float('inf'):
+                return float('inf')
+            return length * step + blocker_cost
+
+        # không bị blocker 
+        return length * step
+    
+    def get_blocker(self, state: dict, car: str, direction: str, ran: int) -> str:
+        """
+        Trả về xe gần nhất chặn hướng di chuyển `direction` của `car`
+        direction: 'forward' hoặc 'backward'
+        """
+        col, row = state[car]
+        orientation = self.cars_map[car]['orientation']
+        length = self.cars_map[car]['cost']
+
+       
+        # bắt đầu từ đầu/đuôi xe, di chuyển từng bước để tìm xe chặn
+        for step in range(1, ran):
+            if orientation == 'H':
+                check_col = col + length - 1 + step if direction == 'forward' else col - step
+                check_row = row
+            else:
+                check_row = row + length - 1 + step if direction == 'forward' else row - step
+                check_col = col
+
+            if not (0 <= check_row < self.size and 0 <= check_col < self.size):
+                break 
+
+            # check xem ô có bị chiếm ko
+            for other_car, other_info in self.cars_map.items():
+                if other_car == car:
+                    continue
+                other_col, other_row = state[other_car]
+                other_len = other_info['cost']
+                other_orient = other_info['orientation']
+
+                # lấy ô của other_car
+                if other_orient == 'H':
+                    occupied = [(other_row, other_col + i) for i in range(other_len)]
+                else:
+                    occupied = [(other_row + i, other_col) for i in range(other_len)]
+
+                if (check_row, check_col) in occupied:
+                    return other_car  #  xe chặn gần nhất
+
+        return None 
+    
+    def a_star_solver(self) -> tuple[list[dict], int, int, int]:
+        solution = []
+        search_time = 0
+        memory_usage = 0
+        expanded_nodes = 0
+
+        start = default_timer()
+        tracemalloc.start()
+
+        state = self.initial_state
+        frontier = []
+        parent_of = {}
+        expanded = set()
+        cost_of = {self.hash_state(state): 0}
+        counter = 0
+
+        h = self.heuristic(state)
+        heapq.heappush(frontier, (h, counter, 0, state))  # (f, tie, g, state)
+        counter += 1
+
+        while frontier:
+            f_cost, _, g_cost, current_state = heapq.heappop(frontier)
+
+            hashed = self.hash_state(current_state)
+            if hashed in expanded:
+                continue
+            expanded.add(hashed)
+
+            if self.is_goal(current_state):
+                expanded_nodes = len(expanded)
+                end = default_timer()
+                search_time = end - start
+                this_state = current_state
+                while self.hash_state(this_state) in parent_of:
+                    this_cost = cost_of[self.hash_state(this_state)]
+                    solution.append({'total_cost': this_cost, 'state': this_state})
+                    this_state = parent_of[self.hash_state(this_state)]
+                solution.append({'total_cost': 0, 'state': self.initial_state})
+                solution = list(reversed(solution))
+                memory_size, memory_peak = tracemalloc.get_traced_memory()
+                tracemalloc.reset_peak()
+                memory_usage = memory_peak
+                return solution, search_time, memory_usage, expanded_nodes
+
+            for next_state, step_cost in self.get_successors(current_state):
+                new_g = g_cost + step_cost
+                hashed_next = self.hash_state(next_state)
+                if hashed_next not in cost_of or new_g < cost_of[hashed_next]:
+                    cost_of[hashed_next] = new_g
+                    parent_of[hashed_next] = current_state
+                    h = self.heuristic(next_state)
+                    heapq.heappush(frontier, (new_g + h, counter, new_g, next_state))
+                    counter += 1
+        # if no solution
+        return [solution, 0, 0, 0]
