@@ -1,4 +1,5 @@
-from button import Button, font, small_font
+from button import *
+from sound import *
 from game import Game
 from map import *
 
@@ -19,10 +20,9 @@ CREAM = (239, 242, 192)
 ZOMP = (81, 158, 138)
 
 DELAY_TIME = 1000
-# super important line
+
+# DO NOT TOUCH! 
 pygame.init()
-# init background music
-background_music = pygame.mixer.Sound('./assets/game-background.mp3')
 
 WIDTH = 800
 HEIGHT = 600

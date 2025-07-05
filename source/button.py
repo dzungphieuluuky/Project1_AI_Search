@@ -1,13 +1,14 @@
 import pygame
 from typing import Union
+
+from sound import *
+
 WHITE = (255, 255, 255)
 BLUE = (0, 100, 255)
 DARK_BLUE = (0, 80, 200)
 BLACK = (0, 0, 0)
 
 pygame.init()
-hover_sound = pygame.mixer.Sound('./assets/click.mp3')
-click_sound = pygame.mixer.Sound('./assets/mouse-click.mp3')
 font = pygame.font.SysFont("Roboto", 96, bold=True)
 small_font = pygame.font.SysFont("Cascadia Mono", 32)
 
