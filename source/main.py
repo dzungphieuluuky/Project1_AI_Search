@@ -237,9 +237,9 @@ def start_game() -> None:
                 step_count += 1
                 last_render_time = current_time
             
-            if step_count > 0 and step_count == len(solution):
-                congrats_screen(selected_map_index, algo_names[selected_algo_index],
-                                step_count, total_cost, is_solved)
+            # if step_count > 0 and step_count == len(solution):
+            #     congrats_screen(selected_map_index, algo_names[selected_algo_index],
+            #                     step_count, total_cost, is_solved)
             
             # add render function here
         game.draw_all_sprites()
