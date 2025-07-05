@@ -40,8 +40,7 @@ class Button:
         if event.type == pygame.MOUSEMOTION:
             self.is_hovered = self.rect.collidepoint(event.pos)
         elif self.is_hovered and (event.type == pygame.MOUSEBUTTONDOWN or
-                                  event.type == pygame.KEYDOWN and (event.key == pygame.K_RETURN or
-                                                                    event.key == pygame.K_SPACE)):
+                                  event.type == pygame.KEYDOWN and event.key in [pygame.K_RETURN, pygame.K_SPACE]):
             if self.expandable:
                 click_sound.play()
             self.callback()

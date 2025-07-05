@@ -94,7 +94,6 @@ class Game():
             x = x0 + vehicle.col * self.grid_size
             y = y0 + vehicle.row * self.grid_size
             self.screen.blit(image, (x, y))
-        pygame.display.flip()
 
     def get_successors(self, state: dict) -> list[tuple[dict, int]]:
         # list of next posisble states and cost

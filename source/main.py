@@ -31,7 +31,6 @@ FPS = 60
 GRID_SIZE = 80
 GRID_ORIGIN = (300, 90)
 ASSETS_PATH = "./assets"
-SCREEN = pygame.display.set_mode((800, 600))
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Rush Hour AI Search Visualizer")
@@ -106,7 +105,7 @@ def start_game() -> None:
     total_cost = 0
     pause = True
     last_render_time = 0
-    game = Game(maps[selected_map_index], SCREEN, GRID_SIZE, GRID_ORIGIN, ASSETS_PATH)
+    game = Game(maps[selected_map_index], screen, GRID_SIZE, GRID_ORIGIN, ASSETS_PATH)
     def change_algo() -> None:
         nonlocal pause
         if not pause:
@@ -213,7 +212,7 @@ def start_game() -> None:
 
         if not pause:
             if not is_solved:
-                game = Game(maps[selected_map_index], SCREEN, GRID_SIZE, GRID_ORIGIN, ASSETS_PATH)
+                game = Game(maps[selected_map_index], screen, GRID_SIZE, GRID_ORIGIN, ASSETS_PATH)
                 total_cost = 0
                 step_count = 0
                 solution, search_time, memory_usage, expanded_nodes = game.algos[selected_algo_index]()
@@ -224,14 +223,20 @@ def start_game() -> None:
                 else:
                     print(f"Solution: {solution}, Search time: {search_time}, Memory usage: {memory_usage}, Expanded nodes: {expanded_nodes}")
                     print(f"Total cost: {solution[-1]['total_cost']}, Step counts: {len(solution) - 1}")
+
             if current_time - last_render_time >= DELAY_TIME and step_count < len(solution):
                 total_cost_button.set_text(f"Total cost: {solution[step_count]['total_cost']}")
                 step_count_button.set_text(f"Step count: {step_count}")
+                for car_id, position in solution[step_count]['state'].items():
+                    for vehicle in game.vehicles:
+                        if vehicle.get_id() == car_id:
+                            vehicle.col, vehicle.row = position
+                            break
                 step_count += 1
                 last_render_time = current_time
             
             # add render function here
-            game.draw_all_sprites()
+        game.draw_all_sprites()
         pygame.display.flip()
         clock.tick(FPS)
 

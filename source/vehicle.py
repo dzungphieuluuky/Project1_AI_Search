@@ -12,7 +12,7 @@ class Vehicle:
         return self.id
     
     def get_position(self) -> tuple[int, int]:
-        return self.row, self.col
+        return self.col, self.row
     
     def get_length(self) -> int:
         return self.length
