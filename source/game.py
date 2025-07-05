@@ -1,4 +1,5 @@
 import heapq
+from collections import deque
 import pygame
 from timeit import default_timer
 import tracemalloc
@@ -139,8 +140,8 @@ class Game():
         Solution is a list of dictionaries each contains: state, total cost
         Example of a solution:
         solution = [
-        {'state': some state, 'cost': some cost},
-        {'state': another state, 'cost': another cost}]
+        {'state': some state, 'total_cost': some cost},
+        {'state': another state, 'total_cost': another cost}]
         '''
         solution = []
 
@@ -206,15 +207,106 @@ class Game():
         # if no solution
         return (solution, 0, 0, 0)
     
-    def bfs_solver(self):
-        # dummy placeholder
-        return ([], 0, 0, 0)
-        # YOUR CODE HERE
+    def bfs_solver(self) -> tuple[list[dict], int, int, int]:
+        solution = []
+        search_time = 0
+        memory_usage = 0
+        expanded_nodes = 0
 
-    def dfs_solver(self):
-        # dummy placeholder
-        return ([], 0, 0, 0)
-        # YOUR CODE HERE
+        start = default_timer()
+        tracemalloc.start()
+
+        state = self.initial_state
+        frontier = deque()
+        frontier.append(state)
+        parent_of = {}
+        expanded = set()
+        while frontier:
+            current_state = frontier.popleft()
+            hashed_current_state = self.hash_state(current_state)
+
+            if hashed_current_state in expanded:
+                continue
+            expanded.add(hashed_current_state)
+
+            if self.is_goal(current_state):
+                expanded_nodes = len(expanded)
+                end = default_timer()
+                search_time = end - start
+                this_state = current_state
+                path = []
+                while self.hash_state(this_state) in parent_of:
+                    path.append(this_state)
+                    this_state = parent_of[self.hash_state(this_state)]
+                path.append(this_state)
+                path.reverse()
+                solution = [{'total_cost': i, 'state': s} for i, s in enumerate(path)]
+
+                memory_size, memory_peak = tracemalloc.get_traced_memory()
+                tracemalloc.reset_peak()
+                memory_usage = memory_peak
+                return (solution, search_time, memory_usage, expanded_nodes)
+
+            for next_state, _ in self.get_successors(current_state):
+                hashed_next_state = self.hash_state(next_state)
+                if hashed_next_state not in expanded:
+                    frontier.append(next_state)
+                    parent_of[hashed_next_state] = current_state
+
+        return (solution, 0, 0, 0)
+
+    def dfs_solver(self) -> tuple[list[dict], int, int, int]:
+        solution = []
+        search_time = 0
+        memory_usage = 0
+        expanded_nodes = 0
+
+        start = default_timer()
+        tracemalloc.start()
+
+        state = self.initial_state
+        frontier = [state]
+
+        in_frontier = {self.hash_state(state)} 
+
+        parent_of = {}
+        expanded = set()
+
+        while frontier:
+            current_state = frontier.pop()
+            hashed_current_state = self.hash_state(current_state)
+            in_frontier.remove(hashed_current_state)
+
+            if hashed_current_state in expanded:
+                continue
+            expanded.add(hashed_current_state)
+
+            if self.is_goal(current_state):
+                expanded_nodes = len(expanded)
+                end = default_timer()
+                search_time = end - start
+
+                this_state = current_state
+                path = []
+                while self.hash_state(this_state) in parent_of:
+                    path.append(this_state)
+                    this_state = parent_of[self.hash_state(this_state)]
+                path.append(this_state)
+                path.reverse()
+                solution = [{'total_cost': i, 'state': s} for i, s in enumerate(path)]
+
+                memory_size, memory_peak = tracemalloc.get_traced_memory()
+                tracemalloc.reset_peak()
+                memory_usage = memory_peak
+                return solution, search_time, memory_usage, expanded_nodes
+
+            for next_state, _ in reversed(self.get_successors(current_state)):
+                hashed_next_state = self.hash_state(next_state)
+                if hashed_next_state not in expanded and hashed_next_state not in in_frontier:
+                    frontier.append(next_state)
+                    in_frontier.add(hashed_next_state)
+                    parent_of[hashed_next_state] = current_state
+        return (solution, 0, 0, 0)
 
     def heuristic(self, state: dict) -> int:
         if self.is_goal(state):
