@@ -223,7 +223,7 @@ def start_game() -> None:
                 game = Game(maps[selected_map_index], screen, GRID_SIZE, GRID_ORIGIN, ASSETS_PATH)
                 shown_congrats = False
                 total_cost = 0
-                step_count = 0
+                step_count = -1
                 solution, search_time, memory_usage, expanded_nodes = game.algos[selected_algo_index]()
                 is_solved = True
                 print(f"Map: {selected_map_index}, Algorithm: {algo_names[selected_algo_index]}")
@@ -234,7 +234,8 @@ def start_game() -> None:
                     print(f"Solution: {solution}, Search time: {search_time}, Memory usage: {memory_usage}, Expanded nodes: {expanded_nodes}")
                     print(f"Total cost: {solution[-1]['total_cost']}, Step counts: {len(solution) - 1}")
 
-            if current_time - last_render_time >= DELAY_TIME and step_count < len(solution):
+            if current_time - last_render_time >= DELAY_TIME and step_count < len(solution) - 1:
+                step_count += 1
                 total_cost = solution[step_count]['total_cost']
                 total_cost_button.set_text(f"Total cost: {total_cost}")
                 step_count_button.set_text(f"Step count: {step_count}")
@@ -242,13 +243,13 @@ def start_game() -> None:
                     game.vehicles[car_id].col, game.vehicles[car_id].row = position
                 game.draw_all_sprites()
                 pygame.display.flip()
-                step_count += 1
                 last_render_time = current_time
             
-            if step_count > 0 and step_count == len(solution) and not shown_congrats:
+            if current_time - last_render_time >= DELAY_TIME and step_count > 0 and step_count == len(solution) - 1 and not shown_congrats:
                 shown_congrats = True
                 congrats_screen(selected_map_index, algo_names[selected_algo_index],
-                                step_count - 1, total_cost, is_solved)
+                                step_count, total_cost, is_solved)
+                last_render_time = current_time
             
             # add render function here
         game.draw_all_sprites()
@@ -346,18 +347,16 @@ def congrats_screen(map_num: int, algo: str, step_count: int, cost: int, is_solv
                          AMARANTH_PURPLE, quit_game)
     buttons.append(quit_button)
 
-    def replay():
+    def back():
         nonlocal running
-        nonlocal is_solved
-        is_solved = False
         running = False
 
-    replay_surf = button_font.render('RePlay (P)', True, BLACK)
-    replay_button_x_position = (reset_button_x_position + reset_surf.get_width() + quit_button_x_position) // 2 - (replay_surf.get_width() // 2)
-    replay_button = Button('RePlay (P)', replay_button_x_position, reset_button_y_position,
-                           replay_surf.get_width() + 35, replay_surf.get_height() + 35,
-                           ZOMP, replay)
-    buttons.append(replay_button)
+    back_surf = button_font.render('Back (B)', True, BLACK)
+    back_button_x_position = (reset_button_x_position + reset_surf.get_width() + quit_button_x_position) // 2 - (back_surf.get_width() // 2)
+    back_button = Button('Back (B)', back_button_x_position, reset_button_y_position,
+                           back_surf.get_width() + 35, back_surf.get_height() + 35,
+                           ZOMP, back)
+    buttons.append(back_button)
 
 
     running = True
@@ -387,8 +386,8 @@ def congrats_screen(map_num: int, algo: str, step_count: int, cost: int, is_solv
                     running = False
                 elif event.key == pygame.K_r:
                     reset_button.callback()
-                elif event.key == pygame.K_p:
-                    replay_button.callback()
+                elif event.key == pygame.K_b:
+                    back_button.callback()
                 elif event.key == pygame.K_q:
                     quit_button.callback()
 
