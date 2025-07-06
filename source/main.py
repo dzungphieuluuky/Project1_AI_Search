@@ -245,10 +245,10 @@ def start_game() -> None:
                 pygame.display.flip()
                 last_render_time = current_time
             
-            if current_time - last_render_time >= DELAY_TIME and step_count > 0 and step_count == len(solution) - 1 and not shown_congrats:
+            if current_time - last_render_time >= DELAY_TIME and not shown_congrats and ((step_count > 0 and step_count == len(solution) - 1) or len(solution) == 0):
                 shown_congrats = True
                 congrats_screen(selected_map_index, algo_names[selected_algo_index],
-                                step_count, total_cost, is_solved)
+                                step_count, total_cost, solution)
                 last_render_time = current_time
             
             # add render function here
@@ -315,23 +315,34 @@ def introduction_screen() -> None:
         pygame.display.flip()
         clock.tick(FPS)
 
-def congrats_screen(map_num: int, algo: str, step_count: int, cost: int, is_solved: bool) -> None:
+def congrats_screen(map_num: int, algo: str, step_count: int, cost: int, solution: list[dict]) -> None:
     buttons = []
 
     top = HEIGHT // 8
     left = WIDTH // 8
     width = 3 * WIDTH // 4
-    height = 3 * HEIGHT // 4 - 80
+    height = 3 * HEIGHT // 4 - 60
     box_rect = pygame.Rect(left, top, width, height)
 
-    # Render text
-    lines = [
-        "Congratulations!",
-        f"Map {map_num} has been",
-        f"solved with {algo}!",
-        f"Step count: {step_count}",
-        f"Total cost: {cost}"
-    ]
+    # if winning
+    if len(solution) > 0:
+        lines = [
+            "Congratulations!",
+            f"The car has escaped successfully",
+            f"from Map {map_num} with the help of",
+            f"{algo}!",
+            f"Step count: {step_count}",
+            f"Total cost: {cost}"
+        ]
+    elif len(solution) == 0:
+        lines = [
+            "Oh no!", 
+            "The target car got trapped by",
+            f"Map {map_num} in an endless nightmare",
+            f"with {algo}!",
+            f"Step count: Unknown",
+            f"Total cost: Unknown"
+        ]
     reset_surf = button_font.render('Reset (R)', True, BLACK)
     reset_button_x_position = left + 20
     reset_button_y_position = top + height - 60 - reset_surf.get_height()
