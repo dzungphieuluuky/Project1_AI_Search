@@ -35,6 +35,8 @@ ASSETS_PATH = "./assets"
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Rush Hour AI Search Visualizer")
+icon_image = pygame.image.load('./assets/traffic_icon.png').convert_alpha()
+pygame.display.set_icon(icon_image)
 clock = pygame.time.Clock()
 
 def menu_loop() -> None:
