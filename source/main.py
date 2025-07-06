@@ -247,7 +247,7 @@ def start_game() -> None:
             
             if current_time - last_render_time >= DELAY_TIME and not shown_congrats and ((step_count > 0 and step_count == len(solution) - 1) or len(solution) == 0):
                 shown_congrats = True
-                congrats_screen(selected_map_index, algo_names[selected_algo_index],
+                ending_screen(selected_map_index, algo_names[selected_algo_index],
                                 step_count, total_cost, solution)
                 last_render_time = current_time
             
@@ -315,7 +315,7 @@ def introduction_screen() -> None:
         pygame.display.flip()
         clock.tick(FPS)
 
-def congrats_screen(map_num: int, algo: str, step_count: int, cost: int, solution: list[dict]) -> None:
+def ending_screen(map_num: int, algo: str, step_count: int, cost: int, solution: list[dict]) -> None:
     buttons = []
 
     top = HEIGHT // 8
