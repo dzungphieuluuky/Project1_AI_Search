@@ -205,7 +205,13 @@ class Game():
                     counter += 1
                     parent_of[hashed_next_state] = current_state
         # if no solution
-        return (solution, 0, 0, 0)
+        expanded_nodes = len(expanded)
+        end = default_timer()
+        search_time = end - start
+        memory_size, memory_peak = tracemalloc.get_traced_memory()
+        tracemalloc.reset_peak()
+        memory_usage = memory_peak
+        return (solution, search_time, memory_usage, expanded_nodes)
     
     def bfs_solver(self) -> tuple[list[dict], int, int, int]:
         solution = []
@@ -253,7 +259,13 @@ class Game():
                     frontier.append(next_state)
                     parent_of[hashed_next_state] = current_state
 
-        return (solution, 0, 0, 0)
+        expanded_nodes = len(expanded)
+        end = default_timer()
+        search_time = end - start
+        memory_size, memory_peak = tracemalloc.get_traced_memory()
+        tracemalloc.reset_peak()
+        memory_usage = memory_peak
+        return (solution, search_time, memory_usage, expanded_nodes)
 
     def dfs_solver(self) -> tuple[list[dict], int, int, int]:
         solution = []
@@ -306,7 +318,14 @@ class Game():
                     frontier.append(next_state)
                     in_frontier.add(hashed_next_state)
                     parent_of[hashed_next_state] = current_state
-        return (solution, 0, 0, 0)
+        # if no solution
+        expanded_nodes = len(expanded)
+        end = default_timer()
+        search_time = end - start
+        memory_size, memory_peak = tracemalloc.get_traced_memory()
+        tracemalloc.reset_peak()
+        memory_usage = memory_peak
+        return (solution, search_time, memory_usage, expanded_nodes)
 
     def heuristic(self, state: dict) -> int:
         if self.is_goal(state):
@@ -466,4 +485,10 @@ class Game():
                     heapq.heappush(frontier, (new_g + h, counter, new_g, next_state))
                     counter += 1
         # if no solution
-        return (solution, 0, 0, 0)
+        expanded_nodes = len(expanded)
+        end = default_timer()
+        search_time = end - start
+        memory_size, memory_peak = tracemalloc.get_traced_memory()
+        tracemalloc.reset_peak()
+        memory_usage = memory_peak
+        return (solution, search_time, memory_usage, expanded_nodes)

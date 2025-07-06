@@ -106,6 +106,7 @@ def start_game() -> None:
     total_cost = 0
     pause = True
     last_render_time = 0
+    shown_congrats = False
     game = Game(maps[selected_map_index], screen, GRID_SIZE, GRID_ORIGIN, ASSETS_PATH)
     def change_algo() -> None:
         nonlocal pause
@@ -220,6 +221,7 @@ def start_game() -> None:
         if not pause:
             if not is_solved:
                 game = Game(maps[selected_map_index], screen, GRID_SIZE, GRID_ORIGIN, ASSETS_PATH)
+                shown_congrats = False
                 total_cost = 0
                 step_count = 0
                 solution, search_time, memory_usage, expanded_nodes = game.algos[selected_algo_index]()
@@ -227,21 +229,26 @@ def start_game() -> None:
                 print(f"Map: {selected_map_index}, Algorithm: {algo_names[selected_algo_index]}")
                 if len(solution) == 0:
                     print(f"No solution found!")
+                    print(f"Search time: {search_time}, Memory usage: {memory_usage}, Expanded nodes: {expanded_nodes}")
                 else:
                     print(f"Solution: {solution}, Search time: {search_time}, Memory usage: {memory_usage}, Expanded nodes: {expanded_nodes}")
                     print(f"Total cost: {solution[-1]['total_cost']}, Step counts: {len(solution) - 1}")
 
             if current_time - last_render_time >= DELAY_TIME and step_count < len(solution):
-                total_cost_button.set_text(f"Total cost: {solution[step_count]['total_cost']}")
+                total_cost = solution[step_count]['total_cost']
+                total_cost_button.set_text(f"Total cost: {total_cost}")
                 step_count_button.set_text(f"Step count: {step_count}")
                 for car_id, position in solution[step_count]['state'].items():
                     game.vehicles[car_id].col, game.vehicles[car_id].row = position
+                game.draw_all_sprites()
+                pygame.display.flip()
                 step_count += 1
                 last_render_time = current_time
             
-            # if step_count > 0 and step_count == len(solution):
-            #     congrats_screen(selected_map_index, algo_names[selected_algo_index],
-            #                     step_count, total_cost, is_solved)
+            if step_count > 0 and step_count == len(solution) and not shown_congrats:
+                shown_congrats = True
+                congrats_screen(selected_map_index, algo_names[selected_algo_index],
+                                step_count - 1, total_cost, is_solved)
             
             # add render function here
         game.draw_all_sprites()
@@ -312,8 +319,8 @@ def congrats_screen(map_num: int, algo: str, step_count: int, cost: int, is_solv
 
     top = HEIGHT // 8
     left = WIDTH // 8
-    width = WIDTH // 1.5
-    height = HEIGHT // 1.5
+    width = 3 * WIDTH // 4
+    height = 3 * HEIGHT // 4 - 80
     box_rect = pygame.Rect(left, top, width, height)
 
     # Render text
@@ -325,15 +332,15 @@ def congrats_screen(map_num: int, algo: str, step_count: int, cost: int, is_solv
         f"Total cost: {cost}"
     ]
     reset_surf = button_font.render('Reset (R)', True, BLACK)
-    reset_button_x_position = left + 40
-    reset_button_y_position = top + height - 40 - reset_surf.get_height()
+    reset_button_x_position = left + 20
+    reset_button_y_position = top + height - 60 - reset_surf.get_height()
     reset_button = Button('Reset (R)', reset_button_x_position, reset_button_y_position,
                           reset_surf.get_width() + 35, reset_surf.get_height() + 35,
                           FRENCH_BLUE, start_game)
     buttons.append(reset_button)
 
     quit_surf = button_font.render('Quit (Q)', True, BLACK)
-    quit_button_x_position = left + width - 40 - quit_surf.get_width()
+    quit_button_x_position = left + width - 50 - quit_surf.get_width()
     quit_button = Button('Quit (Q)', quit_button_x_position, reset_button_y_position,
                          quit_surf.get_width() + 35, quit_surf.get_height() + 35,
                          AMARANTH_PURPLE, quit_game)
@@ -360,7 +367,10 @@ def congrats_screen(map_num: int, algo: str, step_count: int, cost: int, is_solv
         pygame.draw.rect(screen, WHITE, box_rect, border_radius=40)
         pygame.draw.rect(screen, BLACK, box_rect, 2, border_radius=40)
         for i, line in enumerate(lines):
-            text_surf = title_font.render(line, True, BLACK)
+            if i == 0:
+                text_surf = title_font.render(line, True, BLACK)
+            else:
+                text_surf = body_font.render(line, True, BLACK)
             text_rect = text_surf.get_rect(center=(WIDTH//2, 160 + i * 40))
             screen.blit(text_surf, text_rect)
 
