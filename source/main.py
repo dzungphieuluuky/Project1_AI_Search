@@ -414,7 +414,7 @@ def quit_game():
 
 def main():
     # set loops = -1 to play forever
-    # background_music.play(loops=-1)
+    background_music.play(loops=-1)
     menu_loop()
 
 if __name__ == "__main__":
